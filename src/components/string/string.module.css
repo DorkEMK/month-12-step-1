@@ -1,0 +1,15 @@
+.form {
+  margin: 0 auto;
+  padding-bottom: 120px;
+  display: flex;
+  max-width: 522px;
+  gap: 12px;
+}
+
+.letters {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  list-style-type: none;
+}
