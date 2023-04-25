@@ -5,10 +5,17 @@
   max-width: 522px;
 }
 
-.letters {
-  margin: 0 auto;
+.wrapper {
   display: flex;
   justify-content: center;
-  gap: 16px;
+}
+
+.series {
+  display: flex;
+  justify-content: flex-start;
+  column-gap: 16px;
+  row-gap: 48px;
+  flex-wrap: wrap;
   list-style-type: none;
+  max-width: 944px;
 }

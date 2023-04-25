@@ -69,19 +69,20 @@ export const StringComponent: React.FC = () => {
           value={values.string}
           name="string"
           onChange={handleChange}
+          extraClass="mr-6"
         />
         <Button
           text={"Развернуть"}
           type="submit"
           isLoader = {isLoading}
-          disabled = {values.string.length === 0 ? true : false}
+          disabled = {!values.string.length}
         />
       </form>
       {strArray &&
       <ul className={styles.letters}>
         {
           strArray.map((item, index) => (
-            <li key={index} className={''}>
+            <li key={index}>
               <Circle letter={item.item} state={item.state} />
             </li>
           ))
