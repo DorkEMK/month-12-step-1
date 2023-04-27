@@ -16,9 +16,24 @@ export const Input: React.FC<InputProps> = ({
   isLimitText = false,
   ...rest
 }) => {
+  const decline = (word: string, numeral: number) => {
+    let ending = "";
+    const residue = numeral % 10;
+
+    if (5 <= numeral && numeral <= 20) {
+      ending = "ов";
+    } else if (residue === 2 || residue === 3 || residue === 4) {
+      ending = "а";
+    } else if (residue === 1) {
+      ending = "";
+    } else ending = "ов";
+
+    return word + ending;
+  };
+
   const limitText =
     type === "text"
-      ? `Максимум — ${maxLength} символа`
+      ? `Максимум — ${maxLength} ${decline("символ", Number(maxLength))}`
       : `Максимальное число — ${max}`;
 
   return (

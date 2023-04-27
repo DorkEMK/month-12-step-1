@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useForm } from "../../hooks/useForm";
-import { TStackElem } from "../../types/data";
+import type { TStackElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
 
@@ -50,7 +50,8 @@ export const StackPage: React.FC = () => {
 
   const reset = () => {
     setIsLoadingReset(true);
-    setStack([]);
+    arrHelper.length = 0;
+    setStack([...arrHelper]);
 
     setIsLoadingPush(false);
     setIsLoadingReset(false);
