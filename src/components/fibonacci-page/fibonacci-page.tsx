@@ -26,12 +26,10 @@ export const FibonacciPage: React.FC = () => {
   const renderFib = async (index: number, initialArr: number[]) => {
     setFibArray([]);
 
-    const fibArray = calcFibArray(index, initialArr);
-    const arrHelper: number[] = [];
+    const fibArray = calcFibArray(index, initialArr);;
 
     for (let fib of fibArray) {
-      arrHelper.push(fib);
-      setFibArray([...arrHelper]);
+      setFibArray(arr => [...arr, fib]);
       await delay(500);
     }
   };
