@@ -8,29 +8,31 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { Stack } from "./stack";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
-  const [stack, setStack] = useState<TStackElem[]>([]);
+
+  const [stackToRender, setStackToRender] = useState<TStackElem[]>([]);
 
   const { values, handleChange, setValues } = useForm({ elem: "" });
   const [isLoadingPush, setIsLoadingPush] = useState(false);
   const [isLoadingPop, setIsLoadingPop] = useState(false);
   const [isLoadingReset, setIsLoadingReset] = useState(false);
 
-  const arrHelper: TStackElem[] = useMemo(() => [], []);
+  const stack = useMemo(() => new Stack<TStackElem>(), []);
 
   const push = async (elem: string) => {
     setIsLoadingPush(true);
 
-    arrHelper.push({ letter: elem, state: ElementStates.Changing });
-    setStack([...arrHelper]);
+    stack.push({ letter: elem, state: ElementStates.Changing });
+    setStackToRender([...stack.getElements()]);
 
     setValues({ ...values, elem: "" });
     await delay(500);
 
-    arrHelper[arrHelper.length - 1].state = ElementStates.Default;
-    setStack([...arrHelper]);
+    stack.peak()!.state = ElementStates.Default;
+    setStackToRender([...stack.getElements()]);
 
     setIsLoadingPush(false);
   };
@@ -38,20 +40,20 @@ export const StackPage: React.FC = () => {
   const pop = async () => {
     setIsLoadingPop(true);
 
-    arrHelper[arrHelper.length - 1].state = ElementStates.Changing;
-    setStack([...arrHelper]);
+    stack.peak()!.state = ElementStates.Changing;
+    setStackToRender([...stack.getElements()]);
     await delay(500);
 
-    arrHelper.pop();
-    setStack([...arrHelper]);
+    stack.pop();
+    setStackToRender([...stack.getElements()]);
 
     setIsLoadingPop(false);
   };
 
   const reset = () => {
     setIsLoadingReset(true);
-    arrHelper.length = 0;
-    setStack([...arrHelper]);
+    stack.reset();
+    setStackToRender([...stack.getElements()]);
 
     setIsLoadingPush(false);
     setIsLoadingReset(false);
@@ -80,7 +82,7 @@ export const StackPage: React.FC = () => {
           text={"Удалить"}
           type="button"
           isLoader={isLoadingPop}
-          disabled={!stack.length}
+          disabled={!stackToRender.length}
           onClick={pop}
           extraClass="mr-40"
         />
@@ -89,19 +91,19 @@ export const StackPage: React.FC = () => {
           type="reset"
           isLoader={isLoadingReset}
           onClick={reset}
-          disabled={!stack.length}
+          disabled={!stackToRender.length}
         />
       </form>
-      {stack && (
+      {stackToRender && (
         <div className={styles.wrapper}>
           <ul className={styles.series}>
-            {stack.map((item, index) => (
+            {stackToRender.map((item, index) => (
               <li key={index}>
                 <Circle
                   letter={item.letter}
                   state={item.state}
                   index={index}
-                  head={index === stack.length - 1 ? "top" : null}
+                  head={index === stackToRender.length - 1 ? "top" : null}
                 />
               </li>
             ))}
