@@ -1,4 +1,5 @@
 import React, { FormEvent, useState } from "react";
+import { FIBONACCI_MAX_INDEX } from "../../constants/data-constraints";
 import { useForm } from "../../hooks/useForm";
 import { delay } from "../../utils/delay";
 
@@ -48,7 +49,7 @@ export const FibonacciPage: React.FC = () => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <Input
           type="number"
-          max={19}
+          max={FIBONACCI_MAX_INDEX}
           min={1}
           isLimitText={true}
           value={values.index}
@@ -63,7 +64,7 @@ export const FibonacciPage: React.FC = () => {
           disabled={
             !values.index ||
             Number(values.index) < 1 ||
-            Number(values.index) > 19 ||
+            Number(values.index) > FIBONACCI_MAX_INDEX ||
             !Number.isInteger(Number(values.index))
           }
         />

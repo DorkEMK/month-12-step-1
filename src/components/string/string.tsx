@@ -1,4 +1,5 @@
 import React, { FormEvent, useState }  from "react";
+import { STRING_MAX_LENGTH } from "../../constants/data-constraints";
 import { useForm } from "../../hooks/useForm";
 import type { TStringElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
@@ -64,7 +65,7 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={handleSubmit}>
         <Input
-          maxLength={11}
+          maxLength={STRING_MAX_LENGTH}
           isLimitText={true}
           value={values.string}
           name="string"

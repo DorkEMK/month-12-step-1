@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { QUEUE_SIZE } from "../../constants/data";
+import { LETTER_MAX_LENGTH, QUEUE_SIZE } from "../../constants/data-constraints";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { HEAD, TAIL } from "../../constants/element-captions";
 import { useForm } from "../../hooks/useForm";
@@ -107,7 +107,7 @@ export const QueuePage: React.FC = () => {
     <SolutionLayout title="Очередь">
       <form className={styles.form}>
         <Input
-          maxLength={4}
+          maxLength={LETTER_MAX_LENGTH}
           isLimitText={true}
           value={values.elem}
           name="elem"

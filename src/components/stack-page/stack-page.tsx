@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { LETTER_MAX_LENGTH } from "../../constants/data-constraints";
 import { useForm } from "../../hooks/useForm";
 import type { TStackElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
@@ -63,7 +64,7 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <form className={styles.form}>
         <Input
-          maxLength={4}
+          maxLength={LETTER_MAX_LENGTH}
           isLimitText={true}
           value={values.elem}
           name="elem"
