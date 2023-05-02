@@ -18,3 +18,8 @@ export type TQueueRenderElem = {
   isHead: boolean;
   isTail: boolean;
 };
+
+export type TArrayElem = {
+  value: number;
+  state: ElementStates;
+};
