@@ -1,0 +1,12 @@
+.form {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 12px;
+  justify-items: stretch;
+  max-width: 952px;
+}
+
+.btn_wide {
+  grid-column: span 2;
+}
