@@ -1,5 +1,6 @@
 import React, { FormEvent, useState }  from "react";
 import { STRING_MAX_LENGTH } from "../../constants/data-constraints";
+import { DELAY_IN_MS } from "../../constants/delays";
 import { useForm } from "../../hooks/useForm";
 import type { TStringElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
@@ -27,20 +28,20 @@ export const StringComponent: React.FC = () => {
     if (end - start < 2) {
       arr[end].state = ElementStates.Modified;
       setStrArray([...arr]);
-      await delay(1000);
-
+      await delay(DELAY_IN_MS);
+      setIsLoading(false);
       return arr;
     }
     arr[start].state = ElementStates.Changing;
     arr[end].state = ElementStates.Changing;
     setStrArray([...arr]);
-    await delay(1000);
+    await delay(DELAY_IN_MS);
 
     swap<TStringElem>(arr, start, end);
     arr[start].state = ElementStates.Modified;
     arr[end].state = ElementStates.Modified;
     setStrArray([...arr]);
-    await delay(1000);
+    await delay(DELAY_IN_MS);
 
     renderReverse(arr, start+1, end-1);
 
@@ -54,11 +55,9 @@ export const StringComponent: React.FC = () => {
 
     const initArr = formInitialArr();
     setStrArray(initArr);
-    await delay(1000);
+    await delay(DELAY_IN_MS);
 
     renderReverse(initArr, 0, initArr.length-1);
-
-    setIsLoading(false);
   }
 
   return (

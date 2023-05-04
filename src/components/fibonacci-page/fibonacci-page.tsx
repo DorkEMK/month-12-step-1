@@ -1,5 +1,6 @@
 import React, { FormEvent, useState } from "react";
 import { FIBONACCI_MAX_INDEX } from "../../constants/data-constraints";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { useForm } from "../../hooks/useForm";
 import { delay } from "../../utils/delay";
 
@@ -25,23 +26,22 @@ export const FibonacciPage: React.FC = () => {
   };
 
   const renderFib = async (index: number, initialArr: number[]) => {
+    setIsLoading(true);
     setFibArray([]);
-
     const fibArray = calcFibArray(index, initialArr);;
 
     for (let fib of fibArray) {
       setFibArray(arr => [...arr, fib]);
-      await delay(500);
+      await delay(SHORT_DELAY_IN_MS);
     }
+    setIsLoading(false);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-
+  
     renderFib(Number(values.index), initialFib);
 
-    setIsLoading(false);
   };
 
   return (

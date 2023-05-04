@@ -118,7 +118,7 @@ export const QueuePage: React.FC = () => {
           text={"Добавить"}
           type="button"
           isLoader={isLoadingEnqueue}
-          disabled={isLoadingDequeue || !values.elem.length || tail === 6}
+          disabled={!values.elem.length || tail === 6 || isLoadingDequeue || isLoadingReset}
           onClick={() => enqueue(values.elem)}
           extraClass="mr-6"
         />
@@ -126,7 +126,7 @@ export const QueuePage: React.FC = () => {
           text={"Удалить"}
           type="button"
           isLoader={isLoadingDequeue}
-          disabled={isLoadingEnqueue || tail < 0 }
+          disabled={queue.isEmpty() || tail < 0 || isLoadingEnqueue || isLoadingReset}
           onClick={dequeue}
           extraClass="mr-40"
         />
@@ -135,7 +135,7 @@ export const QueuePage: React.FC = () => {
           type="reset"
           isLoader={isLoadingReset}
           onClick={reset}
-          disabled={isLoadingEnqueue || isLoadingDequeue }
+          disabled={queue.isEmpty() || isLoadingEnqueue || isLoadingDequeue }
         />
       </form>
       {queueToRender && (

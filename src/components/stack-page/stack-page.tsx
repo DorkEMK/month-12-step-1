@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { LETTER_MAX_LENGTH } from "../../constants/data-constraints";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { useForm } from "../../hooks/useForm";
 import type { TStackElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
@@ -30,7 +31,7 @@ export const StackPage: React.FC = () => {
     setStackToRender([...stack.getElements()]);
 
     setValues({ ...values, elem: "" });
-    await delay(500);
+    await delay(SHORT_DELAY_IN_MS);
 
     stack.peak()!.state = ElementStates.Default;
     setStackToRender([...stack.getElements()]);
@@ -43,7 +44,7 @@ export const StackPage: React.FC = () => {
 
     stack.peak()!.state = ElementStates.Changing;
     setStackToRender([...stack.getElements()]);
-    await delay(500);
+    await delay(SHORT_DELAY_IN_MS);
 
     stack.pop();
     setStackToRender([...stack.getElements()]);
@@ -75,7 +76,7 @@ export const StackPage: React.FC = () => {
           text={"Добавить"}
           type="button"
           isLoader={isLoadingPush}
-          disabled={!values.elem.length}
+          disabled={!values.elem.length || isLoadingPop || isLoadingReset}
           onClick={() => push(values.elem)}
           extraClass="mr-6"
         />
@@ -83,7 +84,7 @@ export const StackPage: React.FC = () => {
           text={"Удалить"}
           type="button"
           isLoader={isLoadingPop}
-          disabled={!stackToRender.length}
+          disabled={!stackToRender.length || isLoadingPush || isLoadingReset}
           onClick={pop}
           extraClass="mr-40"
         />
@@ -92,7 +93,7 @@ export const StackPage: React.FC = () => {
           type="reset"
           isLoader={isLoadingReset}
           onClick={reset}
-          disabled={!stackToRender.length}
+          disabled={!stackToRender.length || isLoadingPush || isLoadingPop}
         />
       </form>
       {stackToRender && (
