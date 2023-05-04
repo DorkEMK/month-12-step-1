@@ -113,7 +113,7 @@ export class LinkedList<T> implements ILinkedList<T> {
         let curr = this.head;
         let currIndex = 0;
         
-        while (currIndex < index && curr && curr.next) {
+        while (currIndex < index-1 && curr && curr.next) {
           currIndex++;
           curr=curr.next;
         }

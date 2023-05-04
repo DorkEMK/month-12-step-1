@@ -195,10 +195,24 @@ export const ListPage: React.FC = () => {
     setIsLoadingButton({ isLoading: false, button: null });
   };
 
-  const handleDeleteByIndex = async (value: string, index: number) => {
-    setIsLoadingButton({ isLoading: true, button: "deleteByIndex" })
-
+  const handleDeleteByIndex = async (index: number) => {
+    setIsLoadingButton({ isLoading: true, button: "deleteByIndex" });
+    let arrHelper = [...listToRender];
+    const targetLetter = arrHelper[index].letter;
+    for (let i=0; i < index; i++) {
+      arrHelper[i].state = ElementStates.Changing;
+      setListToRender([...arrHelper]);
+      await delay(SHORT_DELAY_IN_MS);
+    }
+    arrHelper[index] = {letter: "", state: ElementStates.Changing, extraElem: {
+      type: "delete",
+      letter: targetLetter,
+      state: ElementStates.Changing,
+    }};
+    setListToRender((arrHelper));
     await delay(SHORT_DELAY_IN_MS);
+    list.deleteByIndex(index);
+    setListToRender(formDefaultRenderList(list.toArray()));
     setIsLoadingButton({ isLoading: false, button: null });
   };
 
@@ -279,7 +293,6 @@ export const ListPage: React.FC = () => {
           isLoader={isLoadingButton.button === "deleteByIndex"}
           disabled={
             !values.index ||
-            !values.value ||
             isNaN(Number(values.index)) ||
             Number(values.index) > listToRender.length - 1 ||
             Number(values.index) < 0 ||
@@ -287,7 +300,7 @@ export const ListPage: React.FC = () => {
               isLoadingButton.button !== "deleteByIndex")
           }
           onClick={() =>
-            handleDeleteByIndex(values.value, Number(values.index))
+            handleDeleteByIndex(Number(values.index))
           }
           extraClass={styles.btn_wide}
         />
