@@ -13,3 +13,11 @@ export const ARRAY_MAX_LENGTH = 17;
 export const ARRAY_MIN_VALUE = 1;
 
 export const ARRAY_MAX_VALUE = 100;
+
+export const LIST_MIN_LENGTH = 2;
+
+export const LIST_MAX_LENGTH = 6;
+
+export const LIST_MIN_VALUE = 1;
+
+export const LIST_MAX_VALUE = 100;
