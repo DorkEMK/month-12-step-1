@@ -77,7 +77,7 @@ export const QueuePage: React.FC = () => {
     setQueueToRender([...queueToRender]);
   };
 
-  const enqueue = (elem: string) => {
+  const handleEnqueue = (elem: string) => {
     setIsLoadingEnqueue(true);
     setValues({ ...values, elem: "" });
 
@@ -87,7 +87,7 @@ export const QueuePage: React.FC = () => {
     setIsLoadingEnqueue(false);
   };
 
-  const dequeue = async () => {
+  const handleDequeue = async () => {
     setIsLoadingDequeue(true);
 
     queue.dequeue();
@@ -96,7 +96,7 @@ export const QueuePage: React.FC = () => {
     setIsLoadingDequeue(false);
   };
 
-  const reset = () => {
+  const handleReset = () => {
     setIsLoadingReset(true);
     queue.reset();
     setQueueToRender([...queueInit]);
@@ -120,7 +120,7 @@ export const QueuePage: React.FC = () => {
           type="button"
           isLoader={isLoadingEnqueue}
           disabled={!values.elem.length || tail === 6 || isLoadingDequeue || isLoadingReset}
-          onClick={() => enqueue(values.elem)}
+          onClick={() => handleEnqueue(values.elem)}
           extraClass="mr-6"
         />
         <Button
@@ -128,14 +128,14 @@ export const QueuePage: React.FC = () => {
           type="button"
           isLoader={isLoadingDequeue}
           disabled={queue.isEmpty() || tail < 0 || isLoadingEnqueue || isLoadingReset}
-          onClick={dequeue}
+          onClick={handleDequeue}
           extraClass="mr-40"
         />
         <Button
           text={"Очистить"}
           type="reset"
           isLoader={isLoadingReset}
-          onClick={reset}
+          onClick={handleReset}
           disabled={queue.isEmpty() || isLoadingEnqueue || isLoadingDequeue }
         />
       </form>

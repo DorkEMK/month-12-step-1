@@ -54,7 +54,7 @@ export const SortingPage: React.FC = () => {
     setIsLoadingNewArr(false);
   };
 
-  const sortAscending = () => {
+  const handleSortAscending = () => {
     setWasSorted(true);
     if (sortingMode === Mode.Selection) {
       selectionSort(arrToRender, Direction.Ascending);
@@ -64,7 +64,7 @@ export const SortingPage: React.FC = () => {
     }
   };
 
-  const sortDescending = () => {
+  const handleSortDescending = () => {
     setWasSorted(true);
     if (sortingMode === Mode.Selection) {
       selectionSort(arrToRender, Direction.Descending);
@@ -247,7 +247,7 @@ export const SortingPage: React.FC = () => {
           text={"По возрастанию"}
           type="button"
           sorting={Direction.Ascending}
-          onClick={sortAscending}
+          onClick={handleSortAscending}
           isLoader={isLoadingAsc}
           disabled={isLoadingDesc || isLoadingNewArr}
           extraClass="mr-6"
@@ -256,7 +256,7 @@ export const SortingPage: React.FC = () => {
           text={"По убыванию"}
           type="button"
           sorting={Direction.Descending}
-          onClick={sortDescending}
+          onClick={handleSortDescending}
           isLoader={isLoadingDesc}
           disabled={isLoadingAsc || isLoadingNewArr}
           extraClass="mr-40"

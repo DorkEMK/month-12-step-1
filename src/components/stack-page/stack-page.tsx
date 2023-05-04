@@ -24,7 +24,7 @@ export const StackPage: React.FC = () => {
 
   const stack = useMemo(() => new Stack<TStackElem>(), []);
 
-  const push = async (elem: string) => {
+  const handlePush = async (elem: string) => {
     setIsLoadingPush(true);
 
     stack.push({ letter: elem, state: ElementStates.Changing });
@@ -39,7 +39,7 @@ export const StackPage: React.FC = () => {
     setIsLoadingPush(false);
   };
 
-  const pop = async () => {
+  const handlePop = async () => {
     setIsLoadingPop(true);
 
     stack.peak()!.state = ElementStates.Changing;
@@ -78,7 +78,7 @@ export const StackPage: React.FC = () => {
           type="button"
           isLoader={isLoadingPush}
           disabled={!values.elem.length || isLoadingPop || isLoadingReset}
-          onClick={() => push(values.elem)}
+          onClick={() => handlePush(values.elem)}
           extraClass="mr-6"
         />
         <Button
@@ -86,7 +86,7 @@ export const StackPage: React.FC = () => {
           type="button"
           isLoader={isLoadingPop}
           disabled={!stackToRender.length || isLoadingPush || isLoadingReset}
-          onClick={pop}
+          onClick={handlePop}
           extraClass="mr-40"
         />
         <Button
