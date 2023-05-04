@@ -109,6 +109,7 @@ export const QueuePage: React.FC = () => {
         <Input
           maxLength={LETTER_MAX_LENGTH}
           isLimitText={true}
+          placeholder="Введите значение"
           value={values.elem}
           name="elem"
           onChange={handleChange}

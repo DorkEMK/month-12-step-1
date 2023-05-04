@@ -52,6 +52,7 @@ export const FibonacciPage: React.FC = () => {
           max={FIBONACCI_MAX_INDEX}
           min={1}
           isLimitText={true}
+          placeholder="Введите число"
           value={values.index}
           name="index"
           onChange={handleChange}
