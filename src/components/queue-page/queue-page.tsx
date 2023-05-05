@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { LETTER_MAX_LENGTH, QUEUE_SIZE } from "../../constants/data-constraints";
+import {
+  LETTER_MAX_LENGTH,
+  QUEUE_SIZE,
+} from "../../constants/data-constraints";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { HEAD, TAIL } from "../../constants/element-captions";
 import { useForm } from "../../hooks/useForm";
@@ -14,93 +17,101 @@ import { Queue } from "./queue";
 import styles from "./queue-page.module.css";
 
 export const QueuePage: React.FC = () => {
-
   const elemInit: TQueueRenderElem = {
     letter: "",
     state: ElementStates.Default,
-    isHead: false,
-    isTail: false,
   };
   const queueInit = Array(QUEUE_SIZE).fill(elemInit);
+  const headInit = -1;
+  const tailInit = -1;
 
   const queue = useMemo(() => new Queue<TQueueElem>(QUEUE_SIZE), []);
 
-  const [queueToRender, setQueueToRender] =useState<Array<TQueueRenderElem>>(queueInit);
-  const [tail, setTail] = useState(-1);
+  const [queueToRender, setQueueToRender] =
+    useState<TQueueRenderElem[]>(queueInit);
+  const [head, setHead] = useState(headInit);
+  const [tail, setTail] = useState(tailInit);
 
   const { values, handleChange, setValues } = useForm({ elem: "" });
   const [isLoadingEnqueue, setIsLoadingEnqueue] = useState(false);
   const [isLoadingDequeue, setIsLoadingDequeue] = useState(false);
   const [isLoadingReset, setIsLoadingReset] = useState(false);
 
-  const renderEnqueue = async (queue: Queue<string>) => {
-    const headIndex = queue.headPointer;
+  const renderReset = async () => {
+    setHead(headInit);
+    setTail(tailInit);
+    setQueueToRender([...queueInit]);
+  };
+
+  const renderEnqueue = async (value: string) => {
     const tailIndex = queue.tailPointer;
-    const tailElem = queue.elements[tailIndex-1]; 
 
-    if (tailElem) {
-      queueToRender[tailIndex-1] = {
-        letter: tailElem,
-        state: ElementStates.Changing,
-        isTail: true,
-        isHead: queueToRender[tailIndex-1].isHead
-      };
-      queueToRender[tailIndex-2] = {...queueToRender[tailIndex-2], isTail: false};
-      queueToRender[headIndex] = {...queueToRender[headIndex], isHead: true};
-      setTail(t => t+1);
-      setQueueToRender([...queueToRender]);
-      await delay(SHORT_DELAY_IN_MS);
-      queueToRender[tailIndex-1] = {...queueToRender[tailIndex-1], state: ElementStates.Default};
+    const newElem: TQueueRenderElem = {
+      letter: value,
+      state: ElementStates.Changing,
+    };
 
-      setQueueToRender([...queueToRender]);
-    }
+    queueToRender[tailIndex] = {
+      ...queueToRender[tailIndex],
+      state: ElementStates.Changing,
+    };
+    setQueueToRender([...queueToRender]);
+    await delay(SHORT_DELAY_IN_MS);
+
+    setTail((t) => t + 1);
+    tailIndex === 0 && setHead((h) => h + 1);
+
+    queueToRender[tailIndex] = newElem;
+    setQueueToRender([...queueToRender]);
+    await delay(SHORT_DELAY_IN_MS);
+
+    queueToRender[tailIndex] = {
+      ...queueToRender[tailIndex],
+      state: ElementStates.Default,
+    };
+    setQueueToRender([...queueToRender]);
   };
 
   const renderDequeue = async () => {
     const headIndex = queue.headPointer;
     const tailIndex = queue.tailPointer;
 
-    queueToRender[headIndex-1]!.state = ElementStates.Changing;
+    queueToRender[headIndex] = {
+      ...queueToRender[headIndex],
+      state: ElementStates.Changing,
+    };
     setQueueToRender([...queueToRender]);
     await delay(SHORT_DELAY_IN_MS);
-    if (headIndex !== tailIndex) {
-      queueToRender[headIndex-1] = {...queueToRender[headIndex-1], letter: "", isHead: false, state: ElementStates.Default};
-      queueToRender[headIndex] = {...queueToRender[headIndex], isHead: true};
-    }
-    else {
-      queue.reset();
-      setTail(-1);
-      setQueueToRender([...queueInit]);
-      return
-    }
 
+    queueToRender[headIndex] = elemInit;
+    if (headIndex === tailIndex) {
+      queue.reset();
+      renderReset();
+      return;
+    }
+    setHead((h) => h + 1);
     setQueueToRender([...queueToRender]);
   };
 
   const handleEnqueue = (elem: string) => {
     setIsLoadingEnqueue(true);
     setValues({ ...values, elem: "" });
-
     queue.enqueue(elem);
-    renderEnqueue(queue);
-
+    renderEnqueue(elem);
     setIsLoadingEnqueue(false);
   };
 
   const handleDequeue = async () => {
     setIsLoadingDequeue(true);
-
-    queue.dequeue();
     renderDequeue();
-
+    queue.dequeue();
     setIsLoadingDequeue(false);
   };
 
   const handleReset = () => {
     setIsLoadingReset(true);
     queue.reset();
-    setTail(-1);
-    setQueueToRender([...queueInit]);
+    renderReset();
     setIsLoadingReset(false);
   };
 
@@ -120,7 +131,12 @@ export const QueuePage: React.FC = () => {
           text={"Добавить"}
           type="button"
           isLoader={isLoadingEnqueue}
-          disabled={!values.elem.length || tail === 6 || isLoadingDequeue || isLoadingReset}
+          disabled={
+            !values.elem.length ||
+            tail === 6 ||
+            isLoadingDequeue ||
+            isLoadingReset
+          }
           onClick={() => handleEnqueue(values.elem)}
           extraClass="mr-6"
         />
@@ -128,7 +144,9 @@ export const QueuePage: React.FC = () => {
           text={"Удалить"}
           type="button"
           isLoader={isLoadingDequeue}
-          disabled={queue.isEmpty() || tail < 0 || isLoadingEnqueue || isLoadingReset}
+          disabled={
+            queue.isEmpty() || tail < 0 || isLoadingEnqueue || isLoadingReset
+          }
           onClick={handleDequeue}
           extraClass="mr-40"
         />
@@ -137,7 +155,7 @@ export const QueuePage: React.FC = () => {
           type="reset"
           isLoader={isLoadingReset}
           onClick={handleReset}
-          disabled={queue.isEmpty() || isLoadingEnqueue || isLoadingDequeue }
+          disabled={queue.isEmpty() || isLoadingEnqueue || isLoadingDequeue}
         />
       </form>
       {queueToRender && (
@@ -149,8 +167,8 @@ export const QueuePage: React.FC = () => {
                   letter={item?.letter}
                   state={item?.state}
                   index={index}
-                  head={item.isHead ? HEAD : null}
-                  tail={item.isTail ? TAIL : null}
+                  head={index === head ? HEAD : null}
+                  tail={index === tail ? TAIL : null}
                 />
               </li>
             ))}

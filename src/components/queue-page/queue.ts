@@ -7,7 +7,7 @@ interface IQueue<T> {
 export class Queue<T> implements IQueue<T> {
   private container: (T | null)[] = [];
   private head = 0;
-  private tail = 0;
+  private tail = -1;
   private readonly size: number = 0;
   private length: number = 0;
 
@@ -39,7 +39,7 @@ export class Queue<T> implements IQueue<T> {
   reset = () => {
     this.length = 0;
     this.head = 0;
-    this.tail = 0;
+    this.tail = -1;
   };
 
   isEmpty = () => this.length === 0;

@@ -15,8 +15,6 @@ export type TQueueElem = string;
 export type TQueueRenderElem = {
   letter: TQueueElem;
   state: ElementStates;
-  isHead: boolean;
-  isTail: boolean;
 };
 
 export type TArrayElem = {
