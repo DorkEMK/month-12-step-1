@@ -7,6 +7,7 @@ import {
   LIST_MIN_VALUE,
 } from "../../constants/data-constraints";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { HEAD, TAIL } from "../../constants/element-captions";
 import { useForm } from "../../hooks/useForm";
 import type { TExtraElem, TListElem, TListRenderElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
@@ -18,6 +19,7 @@ import { ArrowIcon } from "../ui/icons/arrow-icon";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { LinkedList } from "./linked-list";
+import { formDefaultRenderList } from "./utils";
 import styles from "./list-page.module.css";
 
 export const ListPage: React.FC = () => {
@@ -36,16 +38,6 @@ export const ListPage: React.FC = () => {
   });
   const arrInit = randomArr(minValue, maxValue, minLen, maxLen);
 
-  const formDefaultRenderList = (arr: string[]) => {
-    const arrOfElements: TListRenderElem[] = [];
-    arr.forEach((elem) => {
-      arrOfElements.push({
-        letter: elem.toString(),
-        state: ElementStates.Default,
-      });
-    });
-    return arrOfElements;
-  };
   const list = React.useMemo(
     () => new LinkedList<TListElem>(arrInit.map((elem) => elem.toString())),
     []
@@ -53,6 +45,7 @@ export const ListPage: React.FC = () => {
   const [listToRender, setListToRender] = useState<TListRenderElem[]>(
     formDefaultRenderList(list.toArray())
   );
+  let arrHelper: TListRenderElem[] = [];
 
   const renderAddHead = async (
     value: string,
@@ -121,7 +114,7 @@ export const ListPage: React.FC = () => {
 
   const handleDeleteHead = async () => {
     setIsLoadingButton({ isLoading: true, button: "deleteHead" });
-    let arrHelper = [...listToRender];
+    arrHelper = [...listToRender];
     const headLetter = arrHelper[0].letter;
     arrHelper[0] = {
       letter: "",
@@ -141,7 +134,7 @@ export const ListPage: React.FC = () => {
 
   const handleDeleteTail = async () => {
     setIsLoadingButton({ isLoading: true, button: "deleteTail" });
-    let arrHelper = [...listToRender];
+    arrHelper = [...listToRender];
     const tailLetter = arrHelper[arrHelper.length - 1].letter;
     arrHelper[arrHelper.length - 1] = {
       letter: "",
@@ -161,7 +154,7 @@ export const ListPage: React.FC = () => {
 
   const handleAddByIndex = async (value: string, index: number) => {
     setIsLoadingButton({ isLoading: true, button: "addByIndex" });
-    let arrHelper = [...listToRender];
+    arrHelper = [...listToRender];
     const newElem: TExtraElem = {
       type: "insert",
       letter: value,
@@ -172,14 +165,14 @@ export const ListPage: React.FC = () => {
     } else {
       for (let i = 0; i <= index; i++) {
         if (i !== 0) {
-          arrHelper[i-1].state = ElementStates.Changing;
+          arrHelper[i - 1].state = ElementStates.Changing;
         }
         arrHelper[i].extraElem = newElem;
         setListToRender([...arrHelper]);
         await delay(SHORT_DELAY_IN_MS);
         delete arrHelper[i].extraElem;
-        }
       }
+    }
     arrHelper.splice(index, -1, {
       letter: value,
       state: ElementStates.Modified,
@@ -197,19 +190,23 @@ export const ListPage: React.FC = () => {
 
   const handleDeleteByIndex = async (index: number) => {
     setIsLoadingButton({ isLoading: true, button: "deleteByIndex" });
-    let arrHelper = [...listToRender];
+    arrHelper = [...listToRender];
     const targetLetter = arrHelper[index].letter;
-    for (let i=0; i < index; i++) {
+    for (let i = 0; i < index; i++) {
       arrHelper[i].state = ElementStates.Changing;
       setListToRender([...arrHelper]);
       await delay(SHORT_DELAY_IN_MS);
     }
-    arrHelper[index] = {letter: "", state: ElementStates.Changing, extraElem: {
-      type: "delete",
-      letter: targetLetter,
+    arrHelper[index] = {
+      letter: "",
       state: ElementStates.Changing,
-    }};
-    setListToRender((arrHelper));
+      extraElem: {
+        type: "delete",
+        letter: targetLetter,
+        state: ElementStates.Changing,
+      },
+    };
+    setListToRender(arrHelper);
     await delay(SHORT_DELAY_IN_MS);
     list.deleteByIndex(index);
     setListToRender(formDefaultRenderList(list.toArray()));
@@ -299,9 +296,7 @@ export const ListPage: React.FC = () => {
             (isLoadingButton.isLoading &&
               isLoadingButton.button !== "deleteByIndex")
           }
-          onClick={() =>
-            handleDeleteByIndex(Number(values.index))
-          }
+          onClick={() => handleDeleteByIndex(Number(values.index))}
           extraClass={styles.btn_wide}
         />
       </form>
@@ -322,7 +317,7 @@ export const ListPage: React.FC = () => {
                         isSmall={true}
                       />
                     ) : index === 0 ? (
-                      "head"
+                      HEAD
                     ) : null
                   }
                   tail={
@@ -333,7 +328,7 @@ export const ListPage: React.FC = () => {
                         isSmall={true}
                       />
                     ) : index === listToRender.length - 1 ? (
-                      "tail"
+                      TAIL
                     ) : null
                   }
                 />
