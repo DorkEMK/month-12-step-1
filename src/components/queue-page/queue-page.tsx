@@ -99,6 +99,7 @@ export const QueuePage: React.FC = () => {
   const handleReset = () => {
     setIsLoadingReset(true);
     queue.reset();
+    setTail(-1);
     setQueueToRender([...queueInit]);
     setIsLoadingReset(false);
   };
