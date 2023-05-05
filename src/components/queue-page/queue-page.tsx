@@ -6,6 +6,7 @@ import {
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { HEAD, TAIL } from "../../constants/element-captions";
 import { useForm } from "../../hooks/useForm";
+import { TBtnState } from "../../types/btn-state";
 import type { TQueueElem, TQueueRenderElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
@@ -25,6 +26,11 @@ export const QueuePage: React.FC = () => {
   const headInit = -1;
   const tailInit = -1;
 
+  const loadingInitState = {
+    isLoading: false,
+    button: null,
+  };
+
   const queue = useMemo(() => new Queue<TQueueElem>(QUEUE_SIZE), []);
 
   const [queueToRender, setQueueToRender] =
@@ -33,9 +39,8 @@ export const QueuePage: React.FC = () => {
   const [tail, setTail] = useState(tailInit);
 
   const { values, handleChange, setValues } = useForm({ elem: "" });
-  const [isLoadingEnqueue, setIsLoadingEnqueue] = useState(false);
-  const [isLoadingDequeue, setIsLoadingDequeue] = useState(false);
-  const [isLoadingReset, setIsLoadingReset] = useState(false);
+  const [isLoadingButton, setIsLoadingButton] =
+    useState<TBtnState>(loadingInitState);
 
   const renderReset = async () => {
     setHead(headInit);
@@ -94,25 +99,25 @@ export const QueuePage: React.FC = () => {
   };
 
   const handleEnqueue = (elem: string) => {
-    setIsLoadingEnqueue(true);
+    setIsLoadingButton({ isLoading: true, button: "enqueue" });
     setValues({ ...values, elem: "" });
     queue.enqueue(elem);
     renderEnqueue(elem);
-    setIsLoadingEnqueue(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleDequeue = async () => {
-    setIsLoadingDequeue(true);
+    setIsLoadingButton({ isLoading: true, button: "dequeue" });
     renderDequeue();
     queue.dequeue();
-    setIsLoadingDequeue(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleReset = () => {
-    setIsLoadingReset(true);
+    setIsLoadingButton({ isLoading: true, button: "reset" });
     queue.reset();
     renderReset();
-    setIsLoadingReset(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   return (
@@ -130,12 +135,11 @@ export const QueuePage: React.FC = () => {
         <Button
           text={"Добавить"}
           type="button"
-          isLoader={isLoadingEnqueue}
+          isLoader={isLoadingButton.button === "enqueue"}
           disabled={
             !values.elem.length ||
             tail === 6 ||
-            isLoadingDequeue ||
-            isLoadingReset
+            (isLoadingButton.isLoading && isLoadingButton.button !== "enqueue")
           }
           onClick={() => handleEnqueue(values.elem)}
           extraClass="mr-6"
@@ -143,9 +147,11 @@ export const QueuePage: React.FC = () => {
         <Button
           text={"Удалить"}
           type="button"
-          isLoader={isLoadingDequeue}
+          isLoader={isLoadingButton.button === "dequeue"}
           disabled={
-            queue.isEmpty() || tail < 0 || isLoadingEnqueue || isLoadingReset
+            queue.isEmpty() ||
+            tail < 0 ||
+            (isLoadingButton.isLoading && isLoadingButton.button !== "dequeue")
           }
           onClick={handleDequeue}
           extraClass="mr-40"
@@ -153,9 +159,12 @@ export const QueuePage: React.FC = () => {
         <Button
           text={"Очистить"}
           type="reset"
-          isLoader={isLoadingReset}
+          isLoader={isLoadingButton.button === "reset"}
           onClick={handleReset}
-          disabled={queue.isEmpty() || isLoadingEnqueue || isLoadingDequeue}
+          disabled={
+            queue.isEmpty() ||
+            (isLoadingButton.isLoading && isLoadingButton.button !== "reset")
+          }
         />
       </form>
       {queueToRender && (

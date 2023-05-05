@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { LETTER_MAX_LENGTH } from "../../constants/data-constraints";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { useForm } from "../../hooks/useForm";
+import { TBtnState } from "../../types/btn-state";
 import type { TStackElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
@@ -14,18 +15,20 @@ import { Stack } from "./stack";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
-
+  const loadingInitState = {
+    isLoading: false,
+    button: null,
+  };
   const [stackToRender, setStackToRender] = useState<TStackElem[]>([]);
 
   const { values, handleChange, setValues } = useForm({ elem: "" });
-  const [isLoadingPush, setIsLoadingPush] = useState(false);
-  const [isLoadingPop, setIsLoadingPop] = useState(false);
-  const [isLoadingReset, setIsLoadingReset] = useState(false);
+  const [isLoadingButton, setIsLoadingButton] =
+    useState<TBtnState>(loadingInitState);
 
   const stack = useMemo(() => new Stack<TStackElem>(), []);
 
   const handlePush = async (elem: string) => {
-    setIsLoadingPush(true);
+    setIsLoadingButton({ isLoading: true, button: "push" });
 
     stack.push({ letter: elem, state: ElementStates.Changing });
     setStackToRender([...stack.getElements()]);
@@ -36,11 +39,11 @@ export const StackPage: React.FC = () => {
     stack.peak()!.state = ElementStates.Default;
     setStackToRender([...stack.getElements()]);
 
-    setIsLoadingPush(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   const handlePop = async () => {
-    setIsLoadingPop(true);
+    setIsLoadingButton({ isLoading: true, button: "pop" });
 
     stack.peak()!.state = ElementStates.Changing;
     setStackToRender([...stack.getElements()]);
@@ -49,16 +52,14 @@ export const StackPage: React.FC = () => {
     stack.pop();
     setStackToRender([...stack.getElements()]);
 
-    setIsLoadingPop(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   const reset = () => {
-    setIsLoadingReset(true);
+    setIsLoadingButton({ isLoading: true, button: "reset" });
     stack.reset();
     setStackToRender([...stack.getElements()]);
-
-    setIsLoadingPush(false);
-    setIsLoadingReset(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   return (
@@ -76,25 +77,34 @@ export const StackPage: React.FC = () => {
         <Button
           text={"Добавить"}
           type="button"
-          isLoader={isLoadingPush}
-          disabled={!values.elem.length || isLoadingPop || isLoadingReset}
+          isLoader={isLoadingButton.button === "push"}
+          disabled={
+            !values.elem.length ||
+            (isLoadingButton.isLoading && isLoadingButton.button !== "push")
+          }
           onClick={() => handlePush(values.elem)}
           extraClass="mr-6"
         />
         <Button
           text={"Удалить"}
           type="button"
-          isLoader={isLoadingPop}
-          disabled={!stackToRender.length || isLoadingPush || isLoadingReset}
+          isLoader={isLoadingButton.button === "pop"}
+          disabled={
+            !stackToRender.length ||
+            (isLoadingButton.isLoading && isLoadingButton.button !== "pop")
+          }
           onClick={handlePop}
           extraClass="mr-40"
         />
         <Button
           text={"Очистить"}
           type="reset"
-          isLoader={isLoadingReset}
+          isLoader={isLoadingButton.button === "reset"}
           onClick={reset}
-          disabled={!stackToRender.length || isLoadingPush || isLoadingPop}
+          disabled={
+            !stackToRender.length ||
+            (isLoadingButton.isLoading && isLoadingButton.button !== "reset")
+          }
         />
       </form>
       {stackToRender && (

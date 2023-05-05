@@ -21,6 +21,7 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { LinkedList } from "./linked-list";
 import { formDefaultRenderList } from "./utils";
 import styles from "./list-page.module.css";
+import { TBtnState } from "../../types/btn-state";
 
 export const ListPage: React.FC = () => {
   const minLen = LIST_MIN_LENGTH;
@@ -28,19 +29,18 @@ export const ListPage: React.FC = () => {
   const minValue = LIST_MIN_VALUE;
   const maxValue = LIST_MAX_VALUE;
 
-  const { values, handleChange } = useForm({ value: "", index: "" });
-  const [isLoadingButton, setIsLoadingButton] = useState<{
-    isLoading: boolean;
-    button: string | null;
-  }>({
+  const loadingInitState = {
     isLoading: false,
     button: null,
-  });
-  const arrInit = randomArr(minValue, maxValue, minLen, maxLen);
+  };
+
+  const { values, handleChange } = useForm({ value: "", index: "" });
+  const [isLoadingButton, setIsLoadingButton] = useState<TBtnState>(loadingInitState);
+  const arrInit = React.useMemo(() => randomArr(minValue, maxValue, minLen, maxLen), [maxLen, maxValue, minLen, minValue]);
 
   const list = React.useMemo(
     () => new LinkedList<TListElem>(arrInit.map((elem) => elem.toString())),
-    []
+    [arrInit]
   );
   const [listToRender, setListToRender] = useState<TListRenderElem[]>(
     formDefaultRenderList(list.toArray())
@@ -91,7 +91,7 @@ export const ListPage: React.FC = () => {
 
     list.prepend(values.value);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton({ isLoading: false, button: null });
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleAddTail = async (value: string) => {
@@ -109,7 +109,7 @@ export const ListPage: React.FC = () => {
 
     list.append(values.value);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton({ isLoading: false, button: null });
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleDeleteHead = async () => {
@@ -129,7 +129,7 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     list.deleteHead();
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton({ isLoading: false, button: null });
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleDeleteTail = async () => {
@@ -149,7 +149,7 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     list.deleteTail();
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton({ isLoading: false, button: null });
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleAddByIndex = async (value: string, index: number) => {
@@ -185,7 +185,7 @@ export const ListPage: React.FC = () => {
 
     list.addByIndex(value, index);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton({ isLoading: false, button: null });
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleDeleteByIndex = async (index: number) => {
@@ -210,7 +210,7 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     list.deleteByIndex(index);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton({ isLoading: false, button: null });
+    setIsLoadingButton(loadingInitState);
   };
 
   return (

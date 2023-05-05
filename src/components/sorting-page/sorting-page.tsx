@@ -7,6 +7,7 @@ import {
   ARRAY_MIN_VALUE,
 } from "../../constants/data-constraints";
 import { DELAY_IN_MS } from "../../constants/delays";
+import { TBtnState } from "../../types/btn-state";
 import type { TArrayElem } from "../../types/data";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
@@ -26,9 +27,12 @@ export const SortingPage: React.FC = () => {
   const minValue = ARRAY_MIN_VALUE;
   const maxValue = ARRAY_MAX_VALUE;
 
-  const [isLoadingAsc, setIsLoadingAsc] = useState<boolean>(false);
-  const [isLoadingDesc, setIsLoadingDesc] = useState(false);
-  const [isLoadingNewArr, setIsLoadingNewArr] = useState(false);
+  const loadingInitState = {
+    isLoading: false,
+    button: null,
+  };
+
+  const [isLoadingButton, setIsLoadingButton] = useState<TBtnState>(loadingInitState);
   const [wasSorted, setWasSorted] = useState(false);
   const [sortingMode, setSortingMode] = useState(Mode.Selection);
 
@@ -48,10 +52,10 @@ export const SortingPage: React.FC = () => {
   const [arrToRender, setArrToRender] = useState(formRandArr(arrInit));
 
   const renderNewArray = () => {
-    setIsLoadingNewArr(true);
+    setIsLoadingButton({ isLoading: true, button: "newArr" });
     const newArray = randomArr(minValue, maxValue, minLen, maxLen);
     setArrToRender(formRandArr(newArray));
-    setIsLoadingNewArr(false);
+    setIsLoadingButton(loadingInitState);
   };
 
   const handleSortAscending = () => {
@@ -83,7 +87,7 @@ export const SortingPage: React.FC = () => {
     }
 
     if (direction === Direction.Ascending) {
-      setIsLoadingAsc(true);
+      setIsLoadingButton({ isLoading: true, button: "sortAsc" });
 
       for (let i = 0; i < arr.length - 1; i++) {
         let minIndex = i;
@@ -108,11 +112,11 @@ export const SortingPage: React.FC = () => {
       }
       arr[arr.length - 1].state = ElementStates.Modified;
       setArrToRender([...arr]);
-      setIsLoadingAsc(false);
+      setIsLoadingButton(loadingInitState);
     }
 
     if (direction === Direction.Descending) {
-      setIsLoadingDesc(true);
+      setIsLoadingButton({ isLoading: true, button: "sortDesc" });
 
       for (let i = 0; i < arr.length - 1; i++) {
         let maxIndex = i;
@@ -137,7 +141,7 @@ export const SortingPage: React.FC = () => {
       }
       arr[arr.length - 1].state = ElementStates.Modified;
       setArrToRender([...arr]);
-      setIsLoadingDesc(false);
+      setIsLoadingButton(loadingInitState);
     }
   };
 
@@ -150,7 +154,7 @@ export const SortingPage: React.FC = () => {
     }
 
     if (direction === Direction.Ascending) {
-      setIsLoadingAsc(true);
+      setIsLoadingButton({ isLoading: true, button: "sortAsc" });
       let isSorted = false;
       for (let i = 0; i < arr.length; i++) {
         // if array wasn't change in previos iteration - it is sorted
@@ -158,7 +162,7 @@ export const SortingPage: React.FC = () => {
           for (let h = 0; h < arr.length - i; h++) {
             arr[h].state = ElementStates.Modified;
             setArrToRender([...arr]);
-            setIsLoadingAsc(false);
+            setIsLoadingButton(loadingInitState);
           }
           return;
         }
@@ -183,11 +187,11 @@ export const SortingPage: React.FC = () => {
         setArrToRender([...arr]);
       }
       setArrToRender([...arr]);
-      setIsLoadingAsc(false);
+      setIsLoadingButton(loadingInitState);
     }
 
     if (direction === Direction.Descending) {
-      setIsLoadingDesc(true);
+      setIsLoadingButton({ isLoading: true, button: "sortDesc" });
       let isSorted = false;
       for (let i = 0; i < arr.length; i++) {
         // if array wasn't change in previos iteration - it is sorted
@@ -195,7 +199,7 @@ export const SortingPage: React.FC = () => {
           for (let h = 0; h < arr.length - i; h++) {
             arr[h].state = ElementStates.Modified;
             setArrToRender([...arr]);
-            setIsLoadingDesc(false);
+            setIsLoadingButton(loadingInitState);
           }
           return;
         }
@@ -220,7 +224,7 @@ export const SortingPage: React.FC = () => {
         setArrToRender([...arr]);
       }
       setArrToRender([...arr]);
-      setIsLoadingDesc(false);
+      setIsLoadingButton(loadingInitState);
     }
   };
 
@@ -232,7 +236,7 @@ export const SortingPage: React.FC = () => {
           value={Mode.Selection}
           checked={sortingMode === Mode.Selection}
           onChange={() => setSortingMode(Mode.Selection)}
-          disabled={isLoadingAsc || isLoadingDesc || isLoadingNewArr}
+          disabled={isLoadingButton.isLoading}
           extraClass="mr-20"
         />
         <RadioInput
@@ -240,7 +244,7 @@ export const SortingPage: React.FC = () => {
           value={Mode.Bubble}
           checked={sortingMode === Mode.Bubble}
           onChange={() => setSortingMode(Mode.Bubble)}
-          disabled={isLoadingAsc || isLoadingDesc || isLoadingNewArr}
+          disabled={isLoadingButton.isLoading}
           extraClass="mr-25"
         />
         <Button
@@ -248,8 +252,8 @@ export const SortingPage: React.FC = () => {
           type="button"
           sorting={Direction.Ascending}
           onClick={handleSortAscending}
-          isLoader={isLoadingAsc}
-          disabled={isLoadingDesc || isLoadingNewArr}
+          isLoader={isLoadingButton.button === "sortAsc"}
+          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== "sortAsc")}
           extraClass="mr-6"
         />
         <Button
@@ -257,16 +261,16 @@ export const SortingPage: React.FC = () => {
           type="button"
           sorting={Direction.Descending}
           onClick={handleSortDescending}
-          isLoader={isLoadingDesc}
-          disabled={isLoadingAsc || isLoadingNewArr}
+          isLoader={isLoadingButton.button === "sortDesc"}
+          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== "sortDesc")}
           extraClass="mr-40"
         />
         <Button
           text={"Новый массив"}
           type="button"
           onClick={renderNewArray}
-          isLoader={isLoadingNewArr}
-          disabled={isLoadingAsc || isLoadingDesc}
+          isLoader={isLoadingButton.button === "newArr"}
+          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== "newArr")}
         />
       </form>
       {arrToRender && (
