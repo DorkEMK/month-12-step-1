@@ -25,10 +25,13 @@ export const StringComponent: React.FC = () => {
   )
 
   const renderReverse = async (arr: TStringElem[], start: number, end: number) => {
-    if (end - start < 2) {
+    if (end < start) {
+      setIsLoading(false);
+      return;
+    }
+    if (end === start) {
       arr[end].state = ElementStates.Modified;
       setStrArray([...arr]);
-      await delay(DELAY_IN_MS);
       setIsLoading(false);
       return arr;
     }
