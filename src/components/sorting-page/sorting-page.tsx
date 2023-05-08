@@ -1,5 +1,4 @@
-import { Dir } from "fs";
-import React, { useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import {
   ARRAY_MAX_LENGTH,
   ARRAY_MAX_VALUE,
@@ -7,7 +6,8 @@ import {
   ARRAY_MIN_VALUE,
 } from "../../constants/data-constraints";
 import { DELAY_IN_MS } from "../../constants/delays";
-import { TBtnState } from "../../types/btn-state";
+import { useBtn } from "../../hooks/useBtn";
+import { SortButtons } from "../../types/btn-names";
 import type { TArrayElem } from "../../types/data";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
@@ -27,12 +27,7 @@ export const SortingPage: React.FC = () => {
   const minValue = ARRAY_MIN_VALUE;
   const maxValue = ARRAY_MAX_VALUE;
 
-  const loadingInitState = {
-    isLoading: false,
-    button: null,
-  };
-
-  const [isLoadingButton, setIsLoadingButton] = useState<TBtnState>(loadingInitState);
+  const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
   const [wasSorted, setWasSorted] = useState(false);
   const [sortingMode, setSortingMode] = useState(Mode.Selection);
 
@@ -51,34 +46,34 @@ export const SortingPage: React.FC = () => {
 
   const [arrToRender, setArrToRender] = useState(formRandArr(arrInit));
 
-  const renderNewArray = () => {
-    setIsLoadingButton({ isLoading: true, button: "newArr" });
+  const renderNewArray = (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     const newArray = randomArr(minValue, maxValue, minLen, maxLen);
     setArrToRender(formRandArr(newArray));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleSortAscending = () => {
+  const handleSortAscending = (e: MouseEvent<HTMLButtonElement>) => {
     setWasSorted(true);
     if (sortingMode === Mode.Selection) {
-      selectionSort(arrToRender, Direction.Ascending);
+      selectionSort(arrToRender, Direction.Ascending, e);
     }
     if (sortingMode === Mode.Bubble) {
-      bubbleSort(arrToRender, Direction.Ascending);
+      bubbleSort(arrToRender, Direction.Ascending, e);
     }
   };
 
-  const handleSortDescending = () => {
+  const handleSortDescending = (e: MouseEvent<HTMLButtonElement>) => {
     setWasSorted(true);
     if (sortingMode === Mode.Selection) {
-      selectionSort(arrToRender, Direction.Descending);
+      selectionSort(arrToRender, Direction.Descending, e);
     }
     if (sortingMode === Mode.Bubble) {
-      bubbleSort(arrToRender, Direction.Descending);
+      bubbleSort(arrToRender, Direction.Descending, e);
     }
   };
 
-  const selectionSort = async (arr: TArrayElem[], direction: Direction) => {
+  const selectionSort = async (arr: TArrayElem[], direction: Direction, e: MouseEvent<HTMLButtonElement>) => {
     // recolor previously sorted array as if it was new
     if (wasSorted) {
       arr.map((elem) => (elem.state = ElementStates.Default));
@@ -87,7 +82,7 @@ export const SortingPage: React.FC = () => {
     }
 
     if (direction === Direction.Ascending) {
-      setIsLoadingButton({ isLoading: true, button: "sortAsc" });
+      setLoadingState(e);
 
       for (let i = 0; i < arr.length - 1; i++) {
         let minIndex = i;
@@ -112,11 +107,11 @@ export const SortingPage: React.FC = () => {
       }
       arr[arr.length - 1].state = ElementStates.Modified;
       setArrToRender([...arr]);
-      setIsLoadingButton(loadingInitState);
+      resetLoadingState();
     }
 
     if (direction === Direction.Descending) {
-      setIsLoadingButton({ isLoading: true, button: "sortDesc" });
+      setLoadingState(e);
 
       for (let i = 0; i < arr.length - 1; i++) {
         let maxIndex = i;
@@ -141,11 +136,11 @@ export const SortingPage: React.FC = () => {
       }
       arr[arr.length - 1].state = ElementStates.Modified;
       setArrToRender([...arr]);
-      setIsLoadingButton(loadingInitState);
+      resetLoadingState();
     }
   };
 
-  const bubbleSort = async (arr: TArrayElem[], direction: Direction) => {
+  const bubbleSort = async (arr: TArrayElem[], direction: Direction, e: MouseEvent<HTMLButtonElement>) => {
     // recolor previously sorted array as if it was new
     if (wasSorted) {
       arr.map((elem) => (elem.state = ElementStates.Default));
@@ -154,7 +149,7 @@ export const SortingPage: React.FC = () => {
     }
 
     if (direction === Direction.Ascending) {
-      setIsLoadingButton({ isLoading: true, button: "sortAsc" });
+      setLoadingState(e);
       let isSorted = false;
       for (let i = 0; i < arr.length; i++) {
         // if array wasn't change in previos iteration - it is sorted
@@ -162,7 +157,7 @@ export const SortingPage: React.FC = () => {
           for (let h = 0; h < arr.length - i; h++) {
             arr[h].state = ElementStates.Modified;
             setArrToRender([...arr]);
-            setIsLoadingButton(loadingInitState);
+            resetLoadingState();
           }
           return;
         }
@@ -187,11 +182,11 @@ export const SortingPage: React.FC = () => {
         setArrToRender([...arr]);
       }
       setArrToRender([...arr]);
-      setIsLoadingButton(loadingInitState);
+      resetLoadingState();
     }
 
     if (direction === Direction.Descending) {
-      setIsLoadingButton({ isLoading: true, button: "sortDesc" });
+      setLoadingState(e);
       let isSorted = false;
       for (let i = 0; i < arr.length; i++) {
         // if array wasn't change in previos iteration - it is sorted
@@ -199,7 +194,7 @@ export const SortingPage: React.FC = () => {
           for (let h = 0; h < arr.length - i; h++) {
             arr[h].state = ElementStates.Modified;
             setArrToRender([...arr]);
-            setIsLoadingButton(loadingInitState);
+            resetLoadingState();
           }
           return;
         }
@@ -224,7 +219,7 @@ export const SortingPage: React.FC = () => {
         setArrToRender([...arr]);
       }
       setArrToRender([...arr]);
-      setIsLoadingButton(loadingInitState);
+      resetLoadingState();
     }
   };
 
@@ -250,27 +245,30 @@ export const SortingPage: React.FC = () => {
         <Button
           text={"По возрастанию"}
           type="button"
+          name={SortButtons.Ascending}
           sorting={Direction.Ascending}
-          onClick={handleSortAscending}
+          onClick={(e) => handleSortAscending(e)}
           isLoader={isLoadingButton.button === "sortAsc"}
-          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== "sortAsc")}
+          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== SortButtons.Ascending)}
           extraClass="mr-6"
         />
         <Button
           text={"По убыванию"}
           type="button"
+          name={SortButtons.Descending}
           sorting={Direction.Descending}
-          onClick={handleSortDescending}
-          isLoader={isLoadingButton.button === "sortDesc"}
-          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== "sortDesc")}
+          onClick={(e) => handleSortDescending(e)}
+          isLoader={isLoadingButton.button === SortButtons.Descending}
+          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== SortButtons.Descending)}
           extraClass="mr-40"
         />
         <Button
           text={"Новый массив"}
           type="button"
-          onClick={renderNewArray}
-          isLoader={isLoadingButton.button === "newArr"}
-          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== "newArr")}
+          name={SortButtons.NewArray}
+          onClick={(e) => renderNewArray(e)}
+          isLoader={isLoadingButton.button === SortButtons.NewArray}
+          disabled={(isLoadingButton.isLoading && isLoadingButton.button !== SortButtons.NewArray)}
         />
       </form>
       {arrToRender && (

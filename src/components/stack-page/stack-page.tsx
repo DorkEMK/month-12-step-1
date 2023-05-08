@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { MouseEvent, useMemo, useState } from "react";
 import { LETTER_MAX_LENGTH } from "../../constants/data-constraints";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { useBtn } from "../../hooks/useBtn";
 import { useForm } from "../../hooks/useForm";
-import { TBtnState } from "../../types/btn-state";
+import { StackButtons } from "../../types/btn-names";
 import type { TStackElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
@@ -15,20 +16,15 @@ import { Stack } from "./stack";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
-  const loadingInitState = {
-    isLoading: false,
-    button: null,
-  };
-  const [stackToRender, setStackToRender] = useState<TStackElem[]>([]);
 
+  const [stackToRender, setStackToRender] = useState<TStackElem[]>([]);
   const { values, handleChange, setValues } = useForm({ elem: "" });
-  const [isLoadingButton, setIsLoadingButton] =
-    useState<TBtnState>(loadingInitState);
+  const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
 
   const stack = useMemo(() => new Stack<TStackElem>(), []);
 
-  const handlePush = async (elem: string) => {
-    setIsLoadingButton({ isLoading: true, button: "push" });
+  const handlePush = async (elem: string, e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
 
     stack.push({ letter: elem, state: ElementStates.Changing });
     setStackToRender([...stack.getElements()]);
@@ -39,11 +35,11 @@ export const StackPage: React.FC = () => {
     stack.peak()!.state = ElementStates.Default;
     setStackToRender([...stack.getElements()]);
 
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handlePop = async () => {
-    setIsLoadingButton({ isLoading: true, button: "pop" });
+  const handlePop = async (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
 
     stack.peak()!.state = ElementStates.Changing;
     setStackToRender([...stack.getElements()]);
@@ -52,14 +48,14 @@ export const StackPage: React.FC = () => {
     stack.pop();
     setStackToRender([...stack.getElements()]);
 
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const reset = () => {
-    setIsLoadingButton({ isLoading: true, button: "reset" });
+  const reset = (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);;
     stack.reset();
     setStackToRender([...stack.getElements()]);
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
   return (
@@ -77,33 +73,36 @@ export const StackPage: React.FC = () => {
         <Button
           text={"Добавить"}
           type="button"
-          isLoader={isLoadingButton.button === "push"}
+          name={StackButtons.Push}
+          isLoader={isLoadingButton.button === StackButtons.Push}
           disabled={
             !values.elem.length ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "push")
+            (isLoadingButton.isLoading && isLoadingButton.button !== StackButtons.Push)
           }
-          onClick={() => handlePush(values.elem)}
+          onClick={(e) => handlePush(values.elem, e)}
           extraClass="mr-6"
         />
         <Button
           text={"Удалить"}
           type="button"
-          isLoader={isLoadingButton.button === "pop"}
+          name={StackButtons.Pop}
+          isLoader={isLoadingButton.button === StackButtons.Pop}
           disabled={
             !stackToRender.length ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "pop")
+            (isLoadingButton.isLoading && isLoadingButton.button !== StackButtons.Pop)
           }
-          onClick={handlePop}
+          onClick={(e) => handlePop(e)}
           extraClass="mr-40"
         />
         <Button
           text={"Очистить"}
           type="reset"
-          isLoader={isLoadingButton.button === "reset"}
-          onClick={reset}
+          name={StackButtons.Reset}
+          isLoader={isLoadingButton.button === StackButtons.Reset}
+          onClick={(e) => reset(e)}
           disabled={
             !stackToRender.length ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "reset")
+            (isLoadingButton.isLoading && isLoadingButton.button !== StackButtons.Reset)
           }
         />
       </form>

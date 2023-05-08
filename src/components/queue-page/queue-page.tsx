@@ -1,12 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { MouseEvent, useMemo, useState } from "react";
 import {
   LETTER_MAX_LENGTH,
   QUEUE_SIZE,
 } from "../../constants/data-constraints";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { HEAD, TAIL } from "../../constants/element-captions";
+import { useBtn } from "../../hooks/useBtn";
 import { useForm } from "../../hooks/useForm";
-import { TBtnState } from "../../types/btn-state";
+import { QueueButtons } from "../../types/btn-names";
 import type { TQueueElem, TQueueRenderElem } from "../../types/data";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
@@ -26,11 +27,6 @@ export const QueuePage: React.FC = () => {
   const headInit = -1;
   const tailInit = -1;
 
-  const loadingInitState = {
-    isLoading: false,
-    button: null,
-  };
-
   const queue = useMemo(() => new Queue<TQueueElem>(QUEUE_SIZE), []);
 
   const [queueToRender, setQueueToRender] =
@@ -39,8 +35,7 @@ export const QueuePage: React.FC = () => {
   const [tail, setTail] = useState(tailInit);
 
   const { values, handleChange, setValues } = useForm({ elem: "" });
-  const [isLoadingButton, setIsLoadingButton] =
-    useState<TBtnState>(loadingInitState);
+  const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
 
   const renderReset = async () => {
     setHead(headInit);
@@ -98,26 +93,26 @@ export const QueuePage: React.FC = () => {
     setQueueToRender([...queueToRender]);
   };
 
-  const handleEnqueue = (elem: string) => {
-    setIsLoadingButton({ isLoading: true, button: "enqueue" });
+  const handleEnqueue = (elem: string, e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     setValues({ ...values, elem: "" });
     queue.enqueue(elem);
     renderEnqueue(elem);
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleDequeue = async () => {
-    setIsLoadingButton({ isLoading: true, button: "dequeue" });
+  const handleDequeue = async (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     renderDequeue();
     queue.dequeue();
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleReset = () => {
-    setIsLoadingButton({ isLoading: true, button: "reset" });
+  const handleReset = (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     queue.reset();
     renderReset();
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
   return (
@@ -135,35 +130,38 @@ export const QueuePage: React.FC = () => {
         <Button
           text={"Добавить"}
           type="button"
-          isLoader={isLoadingButton.button === "enqueue"}
+          name={QueueButtons.Enqueue}
+          isLoader={isLoadingButton.button === QueueButtons.Enqueue}
           disabled={
             !values.elem.length ||
             tail === 6 ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "enqueue")
+            (isLoadingButton.isLoading && isLoadingButton.button !== QueueButtons.Enqueue)
           }
-          onClick={() => handleEnqueue(values.elem)}
+          onClick={(e) => handleEnqueue(values.elem, e)}
           extraClass="mr-6"
         />
         <Button
           text={"Удалить"}
           type="button"
-          isLoader={isLoadingButton.button === "dequeue"}
+          isLoader={isLoadingButton.button === QueueButtons.Dequeue}
+          name={QueueButtons.Dequeue}
           disabled={
             queue.isEmpty() ||
             tail < 0 ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "dequeue")
+            (isLoadingButton.isLoading && isLoadingButton.button !== QueueButtons.Dequeue)
           }
-          onClick={handleDequeue}
+          onClick={(e) => handleDequeue(e)}
           extraClass="mr-40"
         />
         <Button
           text={"Очистить"}
           type="reset"
-          isLoader={isLoadingButton.button === "reset"}
-          onClick={handleReset}
+          name={QueueButtons.Reset}
+          isLoader={isLoadingButton.button === QueueButtons.Reset}
+          onClick={(e) => handleReset(e)}
           disabled={
             queue.isEmpty() ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "reset")
+            (isLoadingButton.isLoading && isLoadingButton.button !== QueueButtons.Reset)
           }
         />
       </form>

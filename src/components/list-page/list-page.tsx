@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import {
   LETTER_MAX_LENGTH,
   LIST_MAX_LENGTH,
@@ -9,7 +9,9 @@ import {
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { HEAD, TAIL } from "../../constants/element-captions";
 import { useForm } from "../../hooks/useForm";
+import { useBtn } from "../../hooks/useBtn";
 import type { TExtraElem, TListElem, TListRenderElem } from "../../types/data";
+import { ListButtons } from "../../types/btn-names";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
 import { randomArr } from "../../utils/randomArr";
@@ -21,7 +23,6 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { LinkedList } from "./linked-list";
 import { formDefaultRenderList } from "./utils";
 import styles from "./list-page.module.css";
-import { TBtnState } from "../../types/btn-state";
 
 export const ListPage: React.FC = () => {
   const minLen = LIST_MIN_LENGTH;
@@ -29,13 +30,8 @@ export const ListPage: React.FC = () => {
   const minValue = LIST_MIN_VALUE;
   const maxValue = LIST_MAX_VALUE;
 
-  const loadingInitState = {
-    isLoading: false,
-    button: null,
-  };
-
   const { values, handleChange } = useForm({ value: "", index: "" });
-  const [isLoadingButton, setIsLoadingButton] = useState<TBtnState>(loadingInitState);
+  const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
   const arrInit = React.useMemo(() => randomArr(minValue, maxValue, minLen, maxLen), [maxLen, maxValue, minLen, minValue]);
 
   const list = React.useMemo(
@@ -78,8 +74,8 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
   };
 
-  const handleAddHead = async (value: string) => {
-    setIsLoadingButton({ isLoading: true, button: "addHead" });
+  const handleAddHead = async (value: string, e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
 
     let arrHelper = [...listToRender];
     const newElem: TExtraElem = {
@@ -91,11 +87,11 @@ export const ListPage: React.FC = () => {
 
     list.prepend(values.value);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleAddTail = async (value: string) => {
-    setIsLoadingButton({ isLoading: true, button: "addTail" });
+  const handleAddTail = async (value: string, e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
 
     let arrHelper = [...listToRender];
     const newElem: TExtraElem = {
@@ -109,11 +105,11 @@ export const ListPage: React.FC = () => {
 
     list.append(values.value);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleDeleteHead = async () => {
-    setIsLoadingButton({ isLoading: true, button: "deleteHead" });
+  const handleDeleteHead = async (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     arrHelper = [...listToRender];
     const headLetter = arrHelper[0].letter;
     arrHelper[0] = {
@@ -129,11 +125,11 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     list.deleteHead();
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleDeleteTail = async () => {
-    setIsLoadingButton({ isLoading: true, button: "deleteTail" });
+  const handleDeleteTail = async (e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     arrHelper = [...listToRender];
     const tailLetter = arrHelper[arrHelper.length - 1].letter;
     arrHelper[arrHelper.length - 1] = {
@@ -149,11 +145,11 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     list.deleteTail();
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleAddByIndex = async (value: string, index: number) => {
-    setIsLoadingButton({ isLoading: true, button: "addByIndex" });
+  const handleAddByIndex = async (value: string, index: number, e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     arrHelper = [...listToRender];
     const newElem: TExtraElem = {
       type: "insert",
@@ -185,11 +181,11 @@ export const ListPage: React.FC = () => {
 
     list.addByIndex(value, index);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
-  const handleDeleteByIndex = async (index: number) => {
-    setIsLoadingButton({ isLoading: true, button: "deleteByIndex" });
+  const handleDeleteByIndex = async (index: number, e: MouseEvent<HTMLButtonElement>) => {
+    setLoadingState(e);
     arrHelper = [...listToRender];
     const targetLetter = arrHelper[index].letter;
     for (let i = 0; i < index; i++) {
@@ -210,7 +206,7 @@ export const ListPage: React.FC = () => {
     await delay(SHORT_DELAY_IN_MS);
     list.deleteByIndex(index);
     setListToRender(formDefaultRenderList(list.toArray()));
-    setIsLoadingButton(loadingInitState);
+    resetLoadingState();
   };
 
   return (
@@ -227,40 +223,44 @@ export const ListPage: React.FC = () => {
         <Button
           text={"Добавить в head"}
           type="button"
-          isLoader={isLoadingButton.button === "addHead"}
+          name={ListButtons.AddHead}
+          isLoader={isLoadingButton.button === ListButtons.AddHead}
           disabled={
             !values.value ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "addHead")
+            (isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.AddHead)
           }
-          onClick={() => handleAddHead(values.value)}
+          onClick={(e) => handleAddHead(values.value, e)}
         />
         <Button
           text={"Добавить в tail"}
           type="button"
-          isLoader={isLoadingButton.button === "addTail"}
+          name={ListButtons.AddTail}
+          isLoader={isLoadingButton.button === ListButtons.AddTail}
           disabled={
             !values.value ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== "addTail")
+            (isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.AddTail)
           }
-          onClick={() => handleAddTail(values.value)}
+          onClick={(e) => handleAddTail(values.value, e)}
         />
         <Button
           text={"Удалить из head"}
           type="button"
-          isLoader={isLoadingButton.button === "deleteHead"}
+          name={ListButtons.DeleteHead}
+          isLoader={isLoadingButton.button === ListButtons.DeleteHead}
           disabled={
-            isLoadingButton.isLoading && isLoadingButton.button !== "deleteHead"
+            isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.DeleteHead
           }
-          onClick={handleDeleteHead}
+          onClick={(e) => handleDeleteHead(e)}
         />
         <Button
           text={"Удалить из tail"}
           type="button"
-          isLoader={isLoadingButton.button === "deleteTail"}
+          name={ListButtons.DeleteTail}
+          isLoader={isLoadingButton.button === ListButtons.DeleteTail}
           disabled={
-            isLoadingButton.isLoading && isLoadingButton.button !== "deleteTail"
+            isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.DeleteTail
           }
-          onClick={handleDeleteTail}
+          onClick={(e) => handleDeleteTail(e)}
         />
         <Input
           placeholder="Введите индекс"
@@ -271,7 +271,8 @@ export const ListPage: React.FC = () => {
         <Button
           text={"Добавить по индексу"}
           type="button"
-          isLoader={isLoadingButton.button === "addByIndex"}
+          name={ListButtons.AddByIndex}
+          isLoader={isLoadingButton.button === ListButtons.AddByIndex}
           disabled={
             !values.index ||
             !values.value ||
@@ -279,24 +280,25 @@ export const ListPage: React.FC = () => {
             Number(values.index) >= listToRender.length ||
             Number(values.index) < 0 ||
             (isLoadingButton.isLoading &&
-              isLoadingButton.button !== "addByIndex")
+              isLoadingButton.button !== ListButtons.AddByIndex)
           }
-          onClick={() => handleAddByIndex(values.value, Number(values.index))}
+          onClick={(e) => handleAddByIndex(values.value, Number(values.index), e)}
           extraClass={styles.btn_wide}
         />
         <Button
           text={"Удалить по индексу"}
           type="button"
-          isLoader={isLoadingButton.button === "deleteByIndex"}
+          name={ListButtons.DeleteByIndex}
+          isLoader={isLoadingButton.button === ListButtons.DeleteByIndex}
           disabled={
             !values.index ||
             isNaN(Number(values.index)) ||
             Number(values.index) > listToRender.length - 1 ||
             Number(values.index) < 0 ||
             (isLoadingButton.isLoading &&
-              isLoadingButton.button !== "deleteByIndex")
+              isLoadingButton.button !== ListButtons.DeleteByIndex)
           }
-          onClick={() => handleDeleteByIndex(Number(values.index))}
+          onClick={(e) => handleDeleteByIndex(Number(values.index), e)}
           extraClass={styles.btn_wide}
         />
       </form>
