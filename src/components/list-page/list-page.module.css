@@ -1,0 +1,36 @@
+.form {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 12px;
+  justify-items: stretch;
+  max-width: 952px;
+  margin: 0 auto;
+}
+
+.btn_wide {
+  grid-column: span 2;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 90px;
+}
+
+.series {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-start;
+  column-gap: 16px;
+  row-gap: 56px;
+  flex-wrap: wrap;
+  list-style-type: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

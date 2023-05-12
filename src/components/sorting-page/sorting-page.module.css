@@ -1,0 +1,24 @@
+.form {
+  margin: 0 auto;
+  max-width: 980px;
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 362px;
+}
+
+.series {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  column-gap: 5px;
+  list-style-type: none;
+}
