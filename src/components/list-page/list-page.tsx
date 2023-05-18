@@ -316,7 +316,7 @@ export const ListPage: React.FC = () => {
                       <Circle
                         letter={item.extraElem.letter}
                         state={item.extraElem.state}
-                        isSmall={true}
+                        isSmall
                       />
                     ) : index === 0 ? (
                       HEAD
@@ -327,7 +327,7 @@ export const ListPage: React.FC = () => {
                       <Circle
                         letter={item.extraElem.letter}
                         state={item.extraElem.state}
-                        isSmall={true}
+                        isSmall
                       />
                     ) : index === listToRender.length - 1 ? (
                       TAIL
