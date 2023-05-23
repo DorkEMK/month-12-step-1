@@ -1,4 +1,4 @@
-export const randomArr = (
+export const getRandomArr = (
   min: number,
   max: number,
   minLen: number,

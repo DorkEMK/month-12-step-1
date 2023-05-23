@@ -14,7 +14,7 @@ import type { TExtraElem, TListElem, TListRenderElem } from "../../types/data";
 import { ListButtons } from "../../types/btn-names";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
-import { randomArr } from "../../utils/randomArr";
+import { getRandomArr } from "../../utils/randomArr";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
@@ -32,7 +32,7 @@ export const ListPage: React.FC = () => {
 
   const { values, handleChange } = useForm({ value: "", index: "" });
   const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
-  const arrInit = React.useMemo(() => randomArr(minValue, maxValue, minLen, maxLen), [maxLen, maxValue, minLen, minValue]);
+  const arrInit = React.useMemo(() => getRandomArr(minValue, maxValue, minLen, maxLen), [maxLen, maxValue, minLen, minValue]);
 
   const list = React.useMemo(
     () => new LinkedList<TListElem>(arrInit.map((elem) => elem.toString())),
