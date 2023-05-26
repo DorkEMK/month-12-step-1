@@ -24,7 +24,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "yarn lint:prettier",
-    "lint:prettier": "prettier --check src/"
+    "lint:prettier": "prettier --check src/",
+    "cypress:open": "./node_modules/.bin/cypress open"
   },
   "eslintConfig": {
     "extends": [
