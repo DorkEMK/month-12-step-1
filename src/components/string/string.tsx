@@ -42,12 +42,14 @@ export const StringComponent: React.FC = () => {
           name="string"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Развернуть"}
           type="submit"
           isLoader={isLoading}
           disabled={!values.string.length}
+          data-cy="submit"
         />
       </form>
       {string && (
