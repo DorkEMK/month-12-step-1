@@ -5,10 +5,7 @@ export type TStringElem = {
   state: ElementStates;
 };
 
-export type TStackElem = {
-  letter: string;
-  state: ElementStates;
-};
+export type TStackElem = string;
 
 export type TQueueElem = string;
 
