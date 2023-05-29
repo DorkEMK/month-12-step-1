@@ -8,4 +8,9 @@ export const routes = {
   list: "list",
 };
 
-export const circle = '[class^="circle_circle"]';
+export const circle = {
+  main: '[class*="circle_content"]',
+  circle: '[class*="circle_circle"]',
+  letter: '[class*="circle_letter"]',
+  index: '[class*="circle_index"]',
+};

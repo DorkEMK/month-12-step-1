@@ -18,7 +18,7 @@ describe("string component", () => {
 
     cy.getBySel("submit").click();
     testStringSteps.output.forEach((step) => {
-      cy.get(circle)
+      cy.get(circle.circle)
         .should("have.length", testStringSteps.length)
         .each((elem, index) => {
           cy.wrap(elem).contains(step[index].item)
