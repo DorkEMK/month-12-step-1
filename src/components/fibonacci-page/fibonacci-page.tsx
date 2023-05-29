@@ -50,6 +50,7 @@ export const FibonacciPage: React.FC = () => {
           name="index"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Развернуть"}
@@ -61,6 +62,7 @@ export const FibonacciPage: React.FC = () => {
             Number(values.index) > FIBONACCI_MAX_INDEX ||
             !Number.isInteger(Number(values.index))
           }
+          data-cy="submit"
         />
       </form>
       {fibArray && (
