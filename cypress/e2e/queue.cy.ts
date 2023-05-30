@@ -2,7 +2,7 @@ import { queueDequeueSteps, queueEnqueueSteps, queuePlaceholder } from "../const
 import { delayShortInMs } from "../constants/delays";
 import { circle, routes } from "../constants/selectors";
 
-describe("stack component", () => {
+describe("queue component", () => {
   beforeEach(() => {
     cy.visit(routes.queue);
     cy.getBySel("input").as("input");

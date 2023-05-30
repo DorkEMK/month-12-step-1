@@ -45,6 +45,4 @@ export class Stack<T> implements IStack<T> {
   get elements() {
     return this.#container;
   }
-
-  
 }
