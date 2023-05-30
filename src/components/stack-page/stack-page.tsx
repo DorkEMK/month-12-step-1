@@ -73,6 +73,7 @@ export const StackPage: React.FC = () => {
           name="elem"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Добавить"}
@@ -86,6 +87,7 @@ export const StackPage: React.FC = () => {
           }
           onClick={(e) => handlePush(values.elem, e)}
           extraClass="mr-6"
+          data-cy="button-push"
         />
         <Button
           text={"Удалить"}
@@ -99,6 +101,7 @@ export const StackPage: React.FC = () => {
           }
           onClick={(e) => handlePop(e)}
           extraClass="mr-40"
+          data-cy="button-pop"
         />
         <Button
           text={"Очистить"}
@@ -111,6 +114,7 @@ export const StackPage: React.FC = () => {
             (isLoadingButton.isLoading &&
               isLoadingButton.button !== StackButtons.Reset)
           }
+          data-cy="button-reset"
         />
       </form>
       {stackToRender && (

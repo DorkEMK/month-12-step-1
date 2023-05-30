@@ -156,7 +156,7 @@ export const testFibSteps = {
         item: "3",
         index: 3,
         style: circleBorderColor.default,
-      }
+      },
     ],
     [
       {
@@ -183,6 +183,96 @@ export const testFibSteps = {
         item: "5",
         index: 4,
         style: circleBorderColor.default,
+      },
+    ],
+  ],
+};
+
+export const testStackPushSteps = {
+  inputFirst: "1",
+  outputFirst: [
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.changing,
+        head: "top",
+      },
+    ],
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.default,
+        head: "top",
+      },
+    ],
+  ],
+  inputSecond: "2",
+  outputSecond: [
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.default,
+        head: "",
+      },
+      {
+        item: "2",
+        index: 1,
+        style: circleBorderColor.changing,
+        head: "top",
+      },
+    ],
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.default,
+        head: "",
+      },
+      {
+        item: "2",
+        index: 1,
+        style: circleBorderColor.default,
+        head: "top",
+      },
+    ],
+  ],
+};
+
+export const testStackPopSteps = {
+  outputFirst: [
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.default,
+        head: "",
+      },
+      {
+        item: "2",
+        index: 1,
+        style: circleBorderColor.changing,
+        head: "top",
+      },
+    ],
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.default,
+        head: "top",
+      },
+    ],
+  ],
+  outputSecond: [
+    [
+      {
+        item: "1",
+        index: 0,
+        style: circleBorderColor.changing,
+        head: "top",
       },
     ],
   ],
