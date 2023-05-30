@@ -14,4 +14,5 @@ export const circle = {
   letter: '[class*="circle_letter"]',
   index: '[class*="circle_index"]',
   head: '[class*="circle_head"]',
+  tail: '[class*="circle_tail"]',
 };
