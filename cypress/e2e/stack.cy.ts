@@ -1,4 +1,4 @@
-import { testStackPopSteps, testStackPushSteps } from "../constants/data";
+import { stackPushSteps, testStackPopSteps } from "../constants/data/stack";
 import { delayShortInMs } from "../constants/delays";
 import { circle, routes } from "../constants/selectors";
 
@@ -12,11 +12,11 @@ describe("stack component", () => {
     cy.getBySel("button-push").should("be.disabled");
   });
 
-  it("should push element in empty stask", () => {
-    cy.getBySel("input").type(testStackPushSteps.inputFirst);
+  it("should push element to empty stask", () => {
+    cy.getBySel("input").type(stackPushSteps.input.toEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
 
-    testStackPushSteps.outputFirst.forEach((step) => {
+    stackPushSteps.output.toEmpty.forEach((step) => {
       cy.get(circle.main).each((elem, index) => {
         cy.wrap(elem)
           .find(circle.circle)
@@ -32,14 +32,14 @@ describe("stack component", () => {
     cy.getBySel("button-reset").should("be.enabled");
   });
 
-  it("should push element in non-empty stask", () => {
-    cy.getBySel("input").type(testStackPushSteps.inputFirst);
+  it("should push element to non-empty stask", () => {
+    cy.getBySel("input").type(stackPushSteps.input.toEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
 
-    cy.getBySel("input").type(testStackPushSteps.inputSecond);
+    cy.getBySel("input").type(stackPushSteps.input.toNonEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
 
-    testStackPushSteps.outputSecond.forEach((step) => {
+    stackPushSteps.output.toNonEmpty.forEach((step) => {
       cy.get(circle.main).each((elem, index) => {
         cy.wrap(elem)
           .find(circle.circle)
@@ -56,14 +56,14 @@ describe("stack component", () => {
   });
 
   it("should pop non-single element from stask", () => {
-    cy.getBySel("input").type(testStackPushSteps.inputFirst);
+    cy.getBySel("input").type(stackPushSteps.input.toEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
-    cy.getBySel("input").type(testStackPushSteps.inputSecond);
+    cy.getBySel("input").type(stackPushSteps.input.toNonEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
 
     cy.getBySel("button-pop").should("be.enabled").click();
 
-    testStackPopSteps.outputFirst.forEach((step) => {
+    testStackPopSteps.output.nonSingle.forEach((step) => {
       cy.get(circle.main)
       .should("have.length", step.length)
       .each((elem, index) => {
@@ -82,12 +82,12 @@ describe("stack component", () => {
   });
 
   it("should pop single element from stask", () => {
-    cy.getBySel("input").type(testStackPushSteps.inputFirst);
+    cy.getBySel("input").type(stackPushSteps.input.toEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
 
     cy.getBySel("button-pop").should("be.enabled").click();
 
-    testStackPopSteps.outputSecond.forEach((step) => {
+    testStackPopSteps.output.single.forEach((step) => {
       cy.get(circle.main).each((elem, index) => {
         cy.wrap(elem)
           .find(circle.circle)
@@ -105,13 +105,14 @@ describe("stack component", () => {
   });
 
   it("should reset stask", () => {
-    cy.getBySel("input").type(testStackPushSteps.inputFirst);
+    cy.getBySel("input").type(stackPushSteps.input.toEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
-    cy.getBySel("input").type(testStackPushSteps.inputSecond);
+    cy.getBySel("input").type(stackPushSteps.input.toNonEmpty);
     cy.getBySel("button-push").should("be.enabled").click();
 
     cy.getBySel("button-reset").should("be.enabled").click();
 
+    cy.get(circle.main).should("not.exist");
     cy.getBySel("input").should("be.empty");
     cy.getBySel("button-pop").should("be.disabled");
     cy.getBySel("button-reset").should("be.disabled");

@@ -1,4 +1,4 @@
-import { testStringSteps } from "../constants/data";
+import { stringSteps } from "../constants/data/string";
 import { delayShortInMs } from "../constants/delays";
 import { circle, routes } from "../constants/selectors";
 
@@ -13,13 +13,13 @@ describe("string component", () => {
   });
 
   it("should reverse string correctly", () => {
-    cy.getBySel("input").type(testStringSteps.input);
+    cy.getBySel("input").type(stringSteps.input);
     cy.getBySel("submit").should("be.enabled");
 
     cy.getBySel("submit").click();
-    testStringSteps.output.forEach((step) => {
+    stringSteps.output.forEach((step) => {
       cy.get(circle.circle)
-        .should("have.length", testStringSteps.length)
+        .should("have.length", stringSteps.length)
         .each((elem, index) => {
           cy.wrap(elem).contains(step[index].item)
           cy.wrap(elem).should("have.css", "border-color", step[index].style);

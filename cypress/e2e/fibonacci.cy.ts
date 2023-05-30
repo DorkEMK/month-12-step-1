@@ -1,4 +1,4 @@
-import { testFibSteps } from "../constants/data";
+import { fibonacciSteps } from "../constants/data/fibonacci";
 import { delayShortInMs } from "../constants/delays";
 import { circle, routes } from "../constants/selectors";
 
@@ -13,11 +13,11 @@ describe("fibonacci component", () => {
   });
 
   it("should render fibonacci array correctly", () => {
-    cy.getBySel("input").type(testFibSteps.input);
+    cy.getBySel("input").type(fibonacciSteps.input);
     cy.getBySel("submit").should("be.enabled");
 
     cy.getBySel("submit").click();
-    testFibSteps.output.forEach((step) => {
+    fibonacciSteps.output.forEach((step) => {
       cy.get(circle.main).each((elem, index) => {
         cy.wrap(elem).find(circle.letter).contains(step[index].item);
         cy.wrap(elem).find(circle.index).contains(step[index].index);
