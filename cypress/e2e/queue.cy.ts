@@ -1,5 +1,5 @@
 import { queueDequeueSteps, queueEnqueueSteps, queuePlaceholder } from "../constants/data/queue";
-import { delayShortInMs } from "../constants/delays";
+import { delayInMs } from "../constants/constants";
 import { circle, routes } from "../constants/selectors";
 
 describe("queue component", () => {
@@ -45,7 +45,7 @@ describe("queue component", () => {
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
         cy.wrap(elem).find(circle.tail).should("have.text", step[index].tail);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.get("@input").should("be.empty");
     cy.get("@button-dequeue").should("be.enabled");
@@ -68,7 +68,7 @@ describe("queue component", () => {
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
         cy.wrap(elem).find(circle.tail).should("have.text", step[index].tail);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.get("@input").should("be.empty");
     cy.get("@button-dequeue").should("be.enabled");
@@ -92,7 +92,7 @@ describe("queue component", () => {
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
         cy.wrap(elem).find(circle.tail).should("have.text", step[index].tail);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.get("@input").should("be.empty");
     cy.get("@button-dequeue").should("be.disabled");
@@ -118,7 +118,7 @@ describe("queue component", () => {
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
         cy.wrap(elem).find(circle.tail).should("have.text", step[index].tail);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.get("@input").should("be.empty");
     cy.get("@button-dequeue").should("be.enabled");

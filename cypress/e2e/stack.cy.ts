@@ -1,5 +1,5 @@
 import { stackPushSteps, testStackPopSteps } from "../constants/data/stack";
-import { delayShortInMs } from "../constants/delays";
+import { delayInMs } from "../constants/constants";
 import { circle, routes } from "../constants/selectors";
 
 describe("stack component", () => {
@@ -25,7 +25,7 @@ describe("stack component", () => {
         cy.wrap(elem).find(circle.index).should("have.text", step[index].index);
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.getBySel("input").should("be.empty");
     cy.getBySel("button-pop").should("be.enabled");
@@ -48,7 +48,7 @@ describe("stack component", () => {
         cy.wrap(elem).find(circle.index).should("have.text", step[index].index);
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.getBySel("input").should("be.empty");
     cy.getBySel("button-pop").should("be.enabled");
@@ -74,7 +74,7 @@ describe("stack component", () => {
         cy.wrap(elem).find(circle.index).should("have.text", step[index].index);
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.getBySel("input").should("be.empty");
     cy.getBySel("button-pop").should("be.enabled");
@@ -96,7 +96,7 @@ describe("stack component", () => {
         cy.wrap(elem).find(circle.index).should("have.text", step[index].index);
         cy.wrap(elem).find(circle.head).should("have.text", step[index].head);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
     cy.get(circle.main).should("not.exist");
     cy.getBySel("input").should("be.empty");

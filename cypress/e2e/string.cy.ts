@@ -1,5 +1,5 @@
 import { stringSteps } from "../constants/data/string";
-import { delayShortInMs } from "../constants/delays";
+import { delayInMs } from "../constants/constants";
 import { circle, routes } from "../constants/selectors";
 
 describe("string component", () => {
@@ -24,7 +24,7 @@ describe("string component", () => {
           cy.wrap(elem).contains(step[index].item)
           cy.wrap(elem).should("have.css", "border-color", step[index].style);
         });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
   });
 });

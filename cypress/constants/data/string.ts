@@ -1,4 +1,4 @@
-import { circleBorderColor } from "../style";
+import { circleBorderColor } from "../constants";
 
 export const stringSteps = {
   input: "1234",

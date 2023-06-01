@@ -1,7 +1,6 @@
 import { list } from "../constants/data/list";
-import { delayShortInMs } from "../constants/delays";
+import { delayInMs, circleBorderColor } from "../constants/constants";
 import { circle, routes } from "../constants/selectors";
-import { circleBorderColor } from "../constants/style";
 
 describe("list component", () => {
   beforeEach(() => {
@@ -46,7 +45,7 @@ describe("list component", () => {
         .find(circle.letter)
         .should("have.text", list.newValue);
 
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
 
       cy.get("@headCircle")
         .find(circle.circle)
@@ -55,7 +54,7 @@ describe("list component", () => {
         .find(circle.letter)
         .should("have.text", list.newValue);
 
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
 
       cy.get("@headCircle")
         .find(circle.circle)
@@ -79,7 +78,7 @@ describe("list component", () => {
         .find(circle.letter)
         .should("have.text", list.newValue);
 
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
 
       cy.get("@tailCircle")
         .find(circle.circle)
@@ -88,7 +87,7 @@ describe("list component", () => {
         .find(circle.letter)
         .should("have.text", list.newValue);
 
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
 
       cy.get("@tailCircle")
         .find(circle.circle)
@@ -117,7 +116,7 @@ describe("list component", () => {
         cy.get("@extraCircle").find(circle.letter).should("have.text", value);
       });
 
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
 
       cy.get("@headCircle").find(circle.head).should("have.text", list.headText);
       cy.get("@circles").should("have.length", $initLen - 1);
@@ -145,7 +144,7 @@ describe("list component", () => {
         cy.get("@extraCircle").find(circle.letter).should("have.text", value);
       });
 
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
 
       cy.get("@tailCircle").find(circle.tail).should("have.text", list.tailText);
       cy.get("@circles").should("have.length", $initLen - 1);
@@ -171,7 +170,7 @@ describe("list component", () => {
           .find(circle.letter)
           .should("have.text", list.newValue);
 
-        cy.wait(delayShortInMs);
+        cy.wait(delayInMs);
 
         cy.get("@headCircle")
           .find(circle.circle)
@@ -187,14 +186,14 @@ describe("list component", () => {
           .find(circle.letter)
           .should("have.text", list.newValue);
 
-        cy.wait(delayShortInMs);
+        cy.wait(delayInMs);
 
         cy.get("@circles")
           .eq(Number(list.index))
           .find(circle.circle)
           .should("have.css", "border-color", circleBorderColor.modified);
 
-        cy.wait(delayShortInMs);
+        cy.wait(delayInMs);
 
         cy.get("@circles").each(elem => {
           cy.wrap(elem)
@@ -224,7 +223,7 @@ describe("list component", () => {
           .find(circle.circle)
           .should("have.css", "border-color", circleBorderColor.changing);
 
-        cy.wait(delayShortInMs);
+        cy.wait(delayInMs);
 
         cy.get("@headCircle")
           .find(circle.circle)
@@ -244,7 +243,7 @@ describe("list component", () => {
             cy.get("@extraCircle").find(circle.letter).should("have.text", value);
           });
 
-        cy.wait(delayShortInMs);
+        cy.wait(delayInMs);
 
         cy.get("@circles").each(elem => {
           cy.wrap(elem)

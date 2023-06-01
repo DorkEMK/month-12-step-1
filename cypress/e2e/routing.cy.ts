@@ -1,5 +1,5 @@
 import { routes } from "../constants/selectors";
-import { routeTexts } from "../constants/text";
+import { pageHeader } from "../constants/constants";
 
 describe("app works correctly with routees", () => {
   beforeEach(() => {
@@ -7,36 +7,36 @@ describe("app works correctly with routees", () => {
   });
 
   it("should open main page", () => {
-    cy.contains(routeTexts.home);
+    cy.contains(pageHeader.home);
   });
 
   it("should open string page", () => {
     cy.get(`a[href*="${routes.string}"]`).click();
-    cy.contains(routeTexts.string);
+    cy.contains(pageHeader.string);
   });
 
   it("should open fibonacci page", () => {
     cy.get(`a[href*="${routes.fibonacci}"]`).click();
-    cy.contains(routeTexts.fibonacci);
+    cy.contains(pageHeader.fibonacci);
   });
 
   it("should open fibonacci page", () => {
     cy.get(`a[href*="${routes.sorting}"]`).click();
-    cy.contains(routeTexts.sorting);
+    cy.contains(pageHeader.sorting);
   });
 
   it("should open stack page", () => {
     cy.get(`a[href*="${routes.stack}"]`).click();
-    cy.contains(routeTexts.stack);
+    cy.contains(pageHeader.stack);
   });
 
   it("should open queue page", () => {
     cy.get(`a[href*="${routes.queue}"]`).click();
-    cy.contains(routeTexts.queue);
+    cy.contains(pageHeader.queue);
   });
 
   it("should open list page", () => {
     cy.get(`a[href*="${routes.list}"]`).click();
-    cy.contains(routeTexts.list);
+    cy.contains(pageHeader.list);
   });
 });

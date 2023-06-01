@@ -1,5 +1,5 @@
 import { fibonacciSteps } from "../constants/data/fibonacci";
-import { delayShortInMs } from "../constants/delays";
+import { delayInMs } from "../constants/constants";
 import { circle, routes } from "../constants/selectors";
 
 describe("fibonacci component", () => {
@@ -25,7 +25,7 @@ describe("fibonacci component", () => {
           .find(circle.circle)
           .should("have.css", "border-color", step[index].style);
       });
-      cy.wait(delayShortInMs);
+      cy.wait(delayInMs);
     });
   });
 });
