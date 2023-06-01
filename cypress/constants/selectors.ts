@@ -15,4 +15,6 @@ export const circle = {
   index: '[class*="circle_index"]',
   head: '[class*="circle_head"]',
   tail: '[class*="circle_tail"]',
+  extraCircle: '[class*="circle_element"]',
+  wrap: '[class*="item"]',
 };

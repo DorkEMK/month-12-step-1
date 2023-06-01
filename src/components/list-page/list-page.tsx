@@ -219,6 +219,7 @@ export const ListPage: React.FC = () => {
           value={values.value}
           name="value"
           onChange={handleChange}
+          data-cy="input-value"
         />
         <Button
           text={"Добавить в head"}
@@ -230,6 +231,7 @@ export const ListPage: React.FC = () => {
             (isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.AddHead)
           }
           onClick={(e) => handleAddHead(values.value, e)}
+          data-cy="button-add-head"
         />
         <Button
           text={"Добавить в tail"}
@@ -241,6 +243,7 @@ export const ListPage: React.FC = () => {
             (isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.AddTail)
           }
           onClick={(e) => handleAddTail(values.value, e)}
+          data-cy="button-add-tail"
         />
         <Button
           text={"Удалить из head"}
@@ -251,6 +254,7 @@ export const ListPage: React.FC = () => {
             isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.DeleteHead
           }
           onClick={(e) => handleDeleteHead(e)}
+          data-cy="button-delete-head"
         />
         <Button
           text={"Удалить из tail"}
@@ -261,12 +265,14 @@ export const ListPage: React.FC = () => {
             isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.DeleteTail
           }
           onClick={(e) => handleDeleteTail(e)}
+          data-cy="button-delete-tail"
         />
         <Input
           placeholder="Введите индекс"
           value={values.index}
           name="index"
           onChange={handleChange}
+          data-cy="input-index"
         />
         <Button
           text={"Добавить по индексу"}
@@ -284,6 +290,7 @@ export const ListPage: React.FC = () => {
           }
           onClick={(e) => handleAddByIndex(values.value, Number(values.index), e)}
           extraClass={styles.btn_wide}
+          data-cy="button-add-index"
         />
         <Button
           text={"Удалить по индексу"}
@@ -300,6 +307,7 @@ export const ListPage: React.FC = () => {
           }
           onClick={(e) => handleDeleteByIndex(Number(values.index), e)}
           extraClass={styles.btn_wide}
+          data-cy="button-delete-index"
         />
       </form>
       {listToRender && (
