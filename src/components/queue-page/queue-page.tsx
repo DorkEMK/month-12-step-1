@@ -93,25 +93,25 @@ export const QueuePage: React.FC = () => {
     setQueueToRender([...queueToRender]);
   };
 
-  const handleEnqueue = (elem: string, e: MouseEvent<HTMLButtonElement>) => {
+  const handleEnqueue = async (elem: string, e: MouseEvent<HTMLButtonElement>) => {
     setLoadingState(e);
     setValues({ ...values, elem: "" });
     queue.enqueue(elem);
-    renderEnqueue(elem);
+    await renderEnqueue(elem);
     resetLoadingState();
   };
 
   const handleDequeue = async (e: MouseEvent<HTMLButtonElement>) => {
     setLoadingState(e);
-    renderDequeue();
+    await renderDequeue();
     queue.dequeue();
     resetLoadingState();
   };
 
-  const handleReset = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleReset = async (e: MouseEvent<HTMLButtonElement>) => {
     setLoadingState(e);
     queue.reset();
-    renderReset();
+    await renderReset();
     resetLoadingState();
   };
 
@@ -126,6 +126,7 @@ export const QueuePage: React.FC = () => {
           name="elem"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Добавить"}
@@ -139,6 +140,7 @@ export const QueuePage: React.FC = () => {
           }
           onClick={(e) => handleEnqueue(values.elem, e)}
           extraClass="mr-6"
+          data-cy="button-enqueue"
         />
         <Button
           text={"Удалить"}
@@ -152,6 +154,7 @@ export const QueuePage: React.FC = () => {
           }
           onClick={(e) => handleDequeue(e)}
           extraClass="mr-40"
+          data-cy="button-dequeue"
         />
         <Button
           text={"Очистить"}
@@ -163,6 +166,7 @@ export const QueuePage: React.FC = () => {
             queue.isEmpty() ||
             (isLoadingButton.isLoading && isLoadingButton.button !== QueueButtons.Reset)
           }
+          data-cy="button-reset"
         />
       </form>
       {queueToRender && (

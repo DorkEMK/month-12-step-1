@@ -20,20 +20,20 @@ export class Queue<T> implements IQueue<T> {
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
     }
-
-    this.container[this.tail % this.size] = item;
     this.tail++;
+    this.container[this.tail % this.size] = item;
     this.length++;
   };
 
   dequeue = () => {
     if (this.isEmpty()) {
-      throw new Error("No elements in the queue");
+      return null;
     }
-
+    const firstElem = this.container[this.head % this.size];
     this.container[this.head % this.size] = null;
     this.head++;
     this.length--;
+    return firstElem;
   };
 
   reset = () => {

@@ -1,67 +1,36 @@
-import React, { FormEvent, useState }  from "react";
+import React, { FormEvent, useState } from "react";
 import { STRING_MAX_LENGTH } from "../../constants/data-constraints";
 import { DELAY_IN_MS } from "../../constants/delays";
 import { useForm } from "../../hooks/useForm";
 import type { TStringElem } from "../../types/data";
-import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
-import { swap } from "../../utils/swap";
 
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./string.module.css";
+import { formInitialArr, reverseBySteps } from "./utils";
 
 export const StringComponent: React.FC = () => {
-
-  const [strArray, setStrArray] = useState<TStringElem[]>([]);
-  const {values, handleChange} = useForm({string: ''});
+  const [string, setString] = useState<TStringElem[]>([]);
+  const { values, handleChange } = useForm({ string: "" });
   const [isLoading, setIsLoading] = useState(false);
 
-  const formInitialArr = () => (
-    values.string.split('')
-    .map((item) => ({item: item, state: ElementStates.Default}))
-  )
-
-  const renderReverse = async (arr: TStringElem[], start: number, end: number) => {
-    if (end < start) {
-      setIsLoading(false);
-      return;
-    }
-    if (end === start) {
-      arr[end].state = ElementStates.Modified;
-      setStrArray([...arr]);
-      setIsLoading(false);
-      return arr;
-    }
-    arr[start].state = ElementStates.Changing;
-    arr[end].state = ElementStates.Changing;
-    setStrArray([...arr]);
-    await delay(DELAY_IN_MS);
-
-    swap<TStringElem>(arr, start, end);
-    arr[start].state = ElementStates.Modified;
-    arr[end].state = ElementStates.Modified;
-    setStrArray([...arr]);
-    await delay(DELAY_IN_MS);
-
-    renderReverse(arr, start+1, end-1);
-
-    return arr;
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
     setIsLoading(true);
 
-    const initArr = formInitialArr();
-    setStrArray(initArr);
-    await delay(DELAY_IN_MS);
-
-    renderReverse(initArr, 0, initArr.length-1);
-  }
+    const initArr = formInitialArr(values.string);
+    const steps = reverseBySteps(initArr, 0, initArr.length - 1, [[...initArr]]);
+    if (steps?.length) {
+      for (const step of steps) {
+        setString([...step]);
+        await delay(DELAY_IN_MS);
+      }
+    }
+    setIsLoading(false);
+  };
 
   return (
     <SolutionLayout title="Строка">
@@ -73,25 +42,25 @@ export const StringComponent: React.FC = () => {
           name="string"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Развернуть"}
           type="submit"
-          isLoader = {isLoading}
-          disabled = {!values.string.length}
+          isLoader={isLoading}
+          disabled={!values.string.length}
+          data-cy="submit"
         />
       </form>
-      {strArray &&
-      <ul className={styles.letters}>
-        {
-          strArray.map((item, index) => (
+      {string && (
+        <ul className={styles.letters}>
+          {string.map((item, index) => (
             <li key={index}>
               <Circle letter={item.item} state={item.state} />
             </li>
-          ))
-        }
-      </ul>}
-
+          ))}
+        </ul>
+      )}
     </SolutionLayout>
   );
 };

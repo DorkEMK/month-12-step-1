@@ -1,36 +1,48 @@
 interface IStack<T> {
   push: (item: T) => void;
-  pop: () => void;
+  pop: () => T | null;
   peak: () => T | null;
-  getSize: () => number;
-  getElements: () => Array<T>;
   reset: () => void;
+  size: number;
+  elements: Array<T>;
 }
 
 export class Stack<T> implements IStack<T> {
-  private container: T[] = [];
+  #container: T[] = [];
+  #size = 0;
 
   push = (item: T): void => {
-    this.container[this.getSize()] = item;
+    const size = ++this.#size;
+    this.#container[size] = item;
   };
 
-  pop = (): void => {
-    if (this.container.length > 0) {
-      delete this.container[this.getSize() - 1];
-      this.container.length = this.getSize() - 1;
-    }
-  };
-
-  peak = (): T | null => {
-    if (this.container.length > 0) {
-      return this.container[this.getSize() - 1];
+  pop = (): T | null => {
+    if (this.size) {
+      const lastElem = this.#container[this.size];
+      delete this.#container[this.size];
+      this.#size--;
+      return lastElem;
     }
     return null;
   };
 
-  getSize = () => this.container.length;
+  peak = (): T | null => {
+    if (this.#size > 0) {
+      return this.#container[this.size];
+    }
+    return null;
+  };
 
-  getElements = () => this.container;
+  reset = () => {
+    this.#container = [];
+    this.#size = 0;
+  };
 
-  reset = () => (this.container = []);
+  get size() {
+    return this.#size;
+  }
+
+  get elements() {
+    return this.#container;
+  }
 }

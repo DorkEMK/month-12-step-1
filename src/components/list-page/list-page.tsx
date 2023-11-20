@@ -14,7 +14,7 @@ import type { TExtraElem, TListElem, TListRenderElem } from "../../types/data";
 import { ListButtons } from "../../types/btn-names";
 import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/delay";
-import { randomArr } from "../../utils/randomArr";
+import { getRandomArr } from "../../utils/randomArr";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
@@ -32,7 +32,7 @@ export const ListPage: React.FC = () => {
 
   const { values, handleChange } = useForm({ value: "", index: "" });
   const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
-  const arrInit = React.useMemo(() => randomArr(minValue, maxValue, minLen, maxLen), [maxLen, maxValue, minLen, minValue]);
+  const arrInit = React.useMemo(() => getRandomArr(minValue, maxValue, minLen, maxLen), [maxLen, maxValue, minLen, minValue]);
 
   const list = React.useMemo(
     () => new LinkedList<TListElem>(arrInit.map((elem) => elem.toString())),
@@ -219,6 +219,7 @@ export const ListPage: React.FC = () => {
           value={values.value}
           name="value"
           onChange={handleChange}
+          data-cy="input-value"
         />
         <Button
           text={"Добавить в head"}
@@ -230,6 +231,7 @@ export const ListPage: React.FC = () => {
             (isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.AddHead)
           }
           onClick={(e) => handleAddHead(values.value, e)}
+          data-cy="button-add-head"
         />
         <Button
           text={"Добавить в tail"}
@@ -241,6 +243,7 @@ export const ListPage: React.FC = () => {
             (isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.AddTail)
           }
           onClick={(e) => handleAddTail(values.value, e)}
+          data-cy="button-add-tail"
         />
         <Button
           text={"Удалить из head"}
@@ -251,6 +254,7 @@ export const ListPage: React.FC = () => {
             isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.DeleteHead
           }
           onClick={(e) => handleDeleteHead(e)}
+          data-cy="button-delete-head"
         />
         <Button
           text={"Удалить из tail"}
@@ -261,12 +265,14 @@ export const ListPage: React.FC = () => {
             isLoadingButton.isLoading && isLoadingButton.button !== ListButtons.DeleteTail
           }
           onClick={(e) => handleDeleteTail(e)}
+          data-cy="button-delete-tail"
         />
         <Input
           placeholder="Введите индекс"
           value={values.index}
           name="index"
           onChange={handleChange}
+          data-cy="input-index"
         />
         <Button
           text={"Добавить по индексу"}
@@ -284,6 +290,7 @@ export const ListPage: React.FC = () => {
           }
           onClick={(e) => handleAddByIndex(values.value, Number(values.index), e)}
           extraClass={styles.btn_wide}
+          data-cy="button-add-index"
         />
         <Button
           text={"Удалить по индексу"}
@@ -300,6 +307,7 @@ export const ListPage: React.FC = () => {
           }
           onClick={(e) => handleDeleteByIndex(Number(values.index), e)}
           extraClass={styles.btn_wide}
+          data-cy="button-delete-index"
         />
       </form>
       {listToRender && (
@@ -316,7 +324,7 @@ export const ListPage: React.FC = () => {
                       <Circle
                         letter={item.extraElem.letter}
                         state={item.extraElem.state}
-                        isSmall={true}
+                        isSmall
                       />
                     ) : index === 0 ? (
                       HEAD
@@ -327,7 +335,7 @@ export const ListPage: React.FC = () => {
                       <Circle
                         letter={item.extraElem.letter}
                         state={item.extraElem.state}
-                        isSmall={true}
+                        isSmall
                       />
                     ) : index === listToRender.length - 1 ? (
                       TAIL

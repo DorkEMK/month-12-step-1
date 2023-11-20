@@ -14,7 +14,7 @@ export const ARRAY_MIN_VALUE = 1;
 
 export const ARRAY_MAX_VALUE = 100;
 
-export const LIST_MIN_LENGTH = 2;
+export const LIST_MIN_LENGTH = 3;
 
 export const LIST_MAX_LENGTH = 6;
 

@@ -9,6 +9,7 @@ import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./fibonacci-page.module.css";
+import { calcFibArray } from "./utils";
 
 export const FibonacciPage: React.FC = () => {
   const [fibArray, setFibArray] = useState<number[]>([]);
@@ -16,14 +17,6 @@ export const FibonacciPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const initialFib = [1, 1];
-
-  const calcFibArray = (index: number, initialArr: number[]) => {
-    for (let i = 2; i <= index; i++) {
-      initialArr[i] = initialArr[i - 1] + initialArr[i - 2];
-    }
-
-    return initialArr;
-  };
 
   const renderFib = async (index: number, initialArr: number[]) => {
     setIsLoading(true);
@@ -57,6 +50,7 @@ export const FibonacciPage: React.FC = () => {
           name="index"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Развернуть"}
@@ -68,6 +62,7 @@ export const FibonacciPage: React.FC = () => {
             Number(values.index) > FIBONACCI_MAX_INDEX ||
             !Number.isInteger(Number(values.index))
           }
+          data-cy="submit"
         />
       </form>
       {fibArray && (

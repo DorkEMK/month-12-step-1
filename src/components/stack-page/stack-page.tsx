@@ -16,24 +16,27 @@ import { Stack } from "./stack";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
-
   const [stackToRender, setStackToRender] = useState<TStackElem[]>([]);
+  const [changingElemIndex, setChangingElemIndex] = useState<number | null>(
+    null
+  );
   const { values, handleChange, setValues } = useForm({ elem: "" });
   const { isLoadingButton, setLoadingState, resetLoadingState } = useBtn();
 
   const stack = useMemo(() => new Stack<TStackElem>(), []);
 
-  const handlePush = async (elem: string, e: MouseEvent<HTMLButtonElement>) => {
+  const handlePush = async (
+    elem: TStackElem,
+    e: MouseEvent<HTMLButtonElement>
+  ) => {
     setLoadingState(e);
 
-    stack.push({ letter: elem, state: ElementStates.Changing });
-    setStackToRender([...stack.getElements()]);
-
+    stack.push(elem);
+    setStackToRender(stack.elements);
     setValues({ ...values, elem: "" });
+    setChangingElemIndex(stack.size);
     await delay(SHORT_DELAY_IN_MS);
-
-    stack.peak()!.state = ElementStates.Default;
-    setStackToRender([...stack.getElements()]);
+    setChangingElemIndex(null);
 
     resetLoadingState();
   };
@@ -41,20 +44,21 @@ export const StackPage: React.FC = () => {
   const handlePop = async (e: MouseEvent<HTMLButtonElement>) => {
     setLoadingState(e);
 
-    stack.peak()!.state = ElementStates.Changing;
-    setStackToRender([...stack.getElements()]);
+    setChangingElemIndex(stack.size);
     await delay(SHORT_DELAY_IN_MS);
-
     stack.pop();
-    setStackToRender([...stack.getElements()]);
+    setStackToRender(stack.elements);
+    setChangingElemIndex(null);
 
     resetLoadingState();
   };
 
   const reset = (e: MouseEvent<HTMLButtonElement>) => {
-    setLoadingState(e);;
+    setLoadingState(e);
+
     stack.reset();
-    setStackToRender([...stack.getElements()]);
+    setStackToRender([...stack.elements]);
+
     resetLoadingState();
   };
 
@@ -69,6 +73,7 @@ export const StackPage: React.FC = () => {
           name="elem"
           onChange={handleChange}
           extraClass="mr-6"
+          data-cy="input"
         />
         <Button
           text={"Добавить"}
@@ -77,10 +82,12 @@ export const StackPage: React.FC = () => {
           isLoader={isLoadingButton.button === StackButtons.Push}
           disabled={
             !values.elem.length ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== StackButtons.Push)
+            (isLoadingButton.isLoading &&
+              isLoadingButton.button !== StackButtons.Push)
           }
           onClick={(e) => handlePush(values.elem, e)}
           extraClass="mr-6"
+          data-cy="button-push"
         />
         <Button
           text={"Удалить"}
@@ -88,11 +95,13 @@ export const StackPage: React.FC = () => {
           name={StackButtons.Pop}
           isLoader={isLoadingButton.button === StackButtons.Pop}
           disabled={
-            !stackToRender.length ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== StackButtons.Pop)
+            !stack.size ||
+            (isLoadingButton.isLoading &&
+              isLoadingButton.button !== StackButtons.Pop)
           }
           onClick={(e) => handlePop(e)}
           extraClass="mr-40"
+          data-cy="button-pop"
         />
         <Button
           text={"Очистить"}
@@ -101,9 +110,11 @@ export const StackPage: React.FC = () => {
           isLoader={isLoadingButton.button === StackButtons.Reset}
           onClick={(e) => reset(e)}
           disabled={
-            !stackToRender.length ||
-            (isLoadingButton.isLoading && isLoadingButton.button !== StackButtons.Reset)
+            !stack.size ||
+            (isLoadingButton.isLoading &&
+              isLoadingButton.button !== StackButtons.Reset)
           }
+          data-cy="button-reset"
         />
       </form>
       {stackToRender && (
@@ -112,10 +123,14 @@ export const StackPage: React.FC = () => {
             {stackToRender.map((item, index) => (
               <li key={index}>
                 <Circle
-                  letter={item.letter}
-                  state={item.state}
-                  index={index}
-                  head={index === stackToRender.length - 1 ? "top" : null}
+                  letter={item}
+                  state={
+                    index === changingElemIndex
+                      ? ElementStates.Changing
+                      : ElementStates.Default
+                  }
+                  index={index-1}
+                  head={index === stack.size ? "top" : null}
                 />
               </li>
             ))}
